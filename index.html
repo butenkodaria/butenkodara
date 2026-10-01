@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -39,6 +39,20 @@ html[data-theme="dark"]{
   --toggle-bg:#151a21;
   --toggle-color:#d4b96a;
   --map-bg:#0d1116;
+  --resize-bg:#1a2029;
+  --resize-bg-hover:#232b36;
+  --resize-icon:#8b96a5;
+  --resize-icon-hover:#c9a227;
+  --task-bg:#131a22;
+  --input-bg:#0b0f14;
+  --input-border:#2f3947;
+  --input-focus:#c9a227;
+  --correct-bg:#0f2a1a;
+  --correct-border:#4a9c6a;
+  --wrong-bg:#2a1010;
+  --wrong-border:#c0392b;
+  --btn-bg:#c9a227;
+  --btn-text:#1a1500;
 }
 html[data-theme="light"]{
   --bg:#f4f1ea;
@@ -63,6 +77,20 @@ html[data-theme="light"]{
   --toggle-bg:#ffffff;
   --toggle-color:#b8860b;
   --map-bg:#f0ece2;
+  --resize-bg:#f7f4ed;
+  --resize-bg-hover:#eef4f8;
+  --resize-icon:#8a94a3;
+  --resize-icon-hover:#b8860b;
+  --task-bg:#fbf8f1;
+  --input-bg:#ffffff;
+  --input-border:#d8ccb2;
+  --input-focus:#b8860b;
+  --correct-bg:#eef7f0;
+  --correct-border:#4a9c6a;
+  --wrong-bg:#fdeeee;
+  --wrong-border:#c0392b;
+  --btn-bg:#b8860b;
+  --btn-text:#ffffff;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -78,6 +106,7 @@ body{
   transition:background-color var(--transition),color var(--transition);
 }
 .container{max-width:960px;margin:0 auto}
+
 .theme-toggle{
   position:fixed;top:1.25rem;right:1.25rem;z-index:100;
   width:48px;height:48px;border-radius:50%;
@@ -92,6 +121,7 @@ body{
 }
 .theme-toggle:hover{transform:scale(1.08);border-color:var(--accent);box-shadow:var(--shadow-hover)}
 .theme-toggle:active{transform:scale(.94)}
+
 header{text-align:center;margin-bottom:2.5rem;padding-bottom:1.5rem;position:relative}
 header::after{
   content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);
@@ -113,6 +143,7 @@ header .years{
   border:1px solid var(--border);border-radius:30px;color:var(--accent);
   font-size:.78rem;letter-spacing:2.5px;font-weight:600;
 }
+
 .controls{display:flex;justify-content:center;gap:.6rem;margin-bottom:2rem;flex-wrap:wrap}
 .control-btn{
   padding:.45rem 1rem;border-radius:30px;border:1px solid var(--border);
@@ -124,6 +155,7 @@ header .years{
   border-color:var(--accent);color:var(--accent);
   background:var(--surface-hover);box-shadow:var(--shadow);
 }
+
 .year-section{margin-bottom:2.5rem}
 .year-title{
   font-family:var(--font-main);
@@ -139,6 +171,7 @@ header .years{
   background:linear-gradient(180deg,var(--accent),var(--accent-deep));
 }
 .year-title .year-line{flex:1;height:1px;background:var(--divider)}
+
 .battle-item{
   background:var(--surface);
   border-radius:var(--radius-lg);
@@ -183,7 +216,6 @@ header .years{
   display:inline-block;background:var(--badge-bg);color:var(--badge-text);
   font-size:.68rem;padding:.15rem .6rem;border-radius:14px;
   font-weight:600;letter-spacing:.3px;
-  transition:background-color var(--transition),color var(--transition);
 }
 .arrow{
   flex-shrink:0;font-size:.85rem;color:var(--text-muted);
@@ -195,6 +227,7 @@ header .years{
   transform:rotate(180deg);
   color:var(--accent);border-color:var(--accent);
 }
+
 .battle-details{
   display:grid;
   grid-template-rows:0fr;
@@ -205,15 +238,82 @@ header .years{
 }
 .battle-item.open .battle-details{grid-template-rows:1fr}
 .battle-details-inner{
-  min-height:0;overflow:hidden;
+  min-height:0;
   padding:0 1.3rem;
   border-top:1px solid transparent;
   transition:padding .3s ease,border-color .3s ease;
+  position:relative;
+  display:flex;
+  flex-direction:column;
 }
 .battle-item.open .battle-details-inner{
-  padding:1.2rem 1.3rem 1.4rem;
+  padding:1.2rem 1.3rem 0;
   border-top-color:var(--border);
 }
+.scroll-content{
+  max-height:450px;
+  overflow-y:auto;
+  padding-right:.5rem;
+  padding-bottom:.5rem;
+  transition:max-height .15s ease;
+  overscroll-behavior:contain;
+}
+.scroll-content::-webkit-scrollbar{width:8px}
+.scroll-content::-webkit-scrollbar-track{background:transparent}
+.scroll-content::-webkit-scrollbar-thumb{
+  background:var(--border-hover);border-radius:4px;
+}
+.scroll-content::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* ===== РУЧКА РЕСАЙЗА (новая, заметная) ===== */
+.resize-handle{
+  height:34px;
+  margin:0 -.3rem;
+  background:var(--resize-bg);
+  border-radius:0 0 var(--radius-lg) var(--radius-lg);
+  cursor:ns-resize;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.35rem;
+  position:relative;
+  user-select:none;
+  flex-shrink:0;
+  border-top:1px solid var(--border);
+  transition:background-color .2s ease;
+  /* Ключевое: блокирует прокрутку страницы при touch-жестах на ручке */
+  touch-action:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.resize-handle:hover,
+.resize-handle.dragging{
+  background:var(--resize-bg-hover);
+}
+.resize-handle .resize-icon{
+  font-size:.85rem;
+  color:var(--resize-icon);
+  transition:color .2s ease,transform .2s ease;
+  line-height:1;
+}
+.resize-handle .resize-label{
+  font-size:.68rem;
+  letter-spacing:.4px;
+  color:var(--resize-icon);
+  font-weight:600;
+  transition:color .2s ease;
+  white-space:nowrap;
+}
+.resize-handle:hover .resize-icon,
+.resize-handle:hover .resize-label,
+.resize-handle.dragging .resize-icon,
+.resize-handle.dragging .resize-label{
+  color:var(--resize-icon-hover);
+}
+.resize-handle:hover .icon-up,
+.resize-handle.dragging .icon-up{transform:translateY(-2px)}
+.resize-handle:hover .icon-down,
+.resize-handle.dragging .icon-down{transform:translateY(2px)}
+
 .detail-section{
   margin-bottom:1rem;padding:.85rem 1rem;
   border-radius:var(--radius-md);
@@ -229,6 +329,10 @@ header .years{
   background:var(--map-bg);
   padding:.6rem;
 }
+.detail-section.quiz-section-fipi{
+  border-left:3px solid var(--accent-deep);
+  background:var(--task-bg);
+}
 .section-label{
   display:flex;align-items:center;gap:.45rem;
   font-weight:700;font-size:.74rem;letter-spacing:1.1px;
@@ -238,8 +342,10 @@ header .years{
 .course .section-label{color:var(--course-color)}
 .outcome .section-label{color:var(--accent-deep)}
 .map-section .section-label{color:var(--text-faint)}
+.quiz-section-fipi .section-label{color:var(--accent-deep)}
 .section-label .icon{font-size:.95rem;line-height:1}
-.detail-text{color:var(--text);font-size:.9rem;line-height:1.65;text-align:justify;hyphens:auto}
+.detail-text{color:var(--text);font-size:.9rem;line-height:1.7;text-align:justify;hyphens:auto}
+.detail-text + .detail-text{margin-top:.55rem}
 .detail-text.names{font-family:var(--font-main);font-style:italic;letter-spacing:.1px}
 .map-frame{
   position:relative;
@@ -249,31 +355,101 @@ header .years{
   background:var(--map-bg);
   line-height:0;
 }
-.map-frame img{
-  width:100%;height:auto;display:block;
-  transition:transform .5s ease;
-}
+.map-frame img{width:100%;height:auto;display:block;transition:transform .5s ease}
 .map-frame:hover img{transform:scale(1.02)}
 .map-caption{
   font-size:.72rem;color:var(--text-faint);
-  margin-top:.45rem;line-height:1.4;
-  font-style:italic;
+  margin-top:.45rem;line-height:1.4;font-style:italic;
 }
+
+/* ===== ЗАДАНИЯ ===== */
+.fipi-task{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  border-radius:var(--radius-sm);
+  padding:.85rem .95rem;
+  margin-bottom:.8rem;
+  font-size:.85rem;
+  line-height:1.55;
+}
+.fipi-task:last-child{margin-bottom:0}
+.fipi-task .task-text{
+  color:var(--text);
+  margin-bottom:.45rem;
+}
+.fipi-task .task-text strong{color:var(--accent-deep)}
+.fipi-task .task-body{
+  color:var(--text);
+  margin-bottom:.5rem;
+  padding-left:.3rem;
+}
+.fipi-task .task-list{
+  color:var(--text-muted);
+  margin-bottom:.6rem;
+  padding:.5rem .7rem;
+  font-size:.8rem;
+  background:var(--surface-alt);
+  border-radius:var(--radius-sm);
+}
+.fipi-task .task-list strong{color:var(--accent-deep)}
+.answer-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.4rem}
+.answer-input{
+  flex:1;min-width:180px;
+  padding:.5rem .75rem;
+  border-radius:var(--radius-sm);
+  border:1.5px solid var(--input-border);
+  background:var(--input-bg);
+  color:var(--text);
+  font-family:var(--font-ui);
+  font-size:.85rem;
+  transition:border-color var(--transition),box-shadow var(--transition);
+}
+.answer-input:focus{
+  outline:none;
+  border-color:var(--input-focus);
+  box-shadow:0 0 0 3px rgba(201,162,39,.15);
+}
+.answer-input.correct{border-color:var(--correct-border);background:var(--correct-bg)}
+.answer-input.wrong{border-color:var(--wrong-border);background:var(--wrong-bg)}
+.check-btn{
+  padding:.5rem 1rem;border-radius:var(--radius-sm);border:none;
+  background:var(--btn-bg);color:var(--btn-text);
+  font-family:var(--font-ui);font-size:.8rem;font-weight:700;
+  letter-spacing:.3px;cursor:pointer;white-space:nowrap;
+  transition:transform var(--transition),box-shadow var(--transition);
+}
+.check-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,162,39,.3)}
+.check-btn:active{transform:translateY(0)}
+.answer-result{
+  margin-top:.55rem;padding:.55rem .75rem;
+  border-radius:var(--radius-sm);font-size:.82rem;line-height:1.5;
+  display:none;
+}
+.answer-result.show{display:block}
+.answer-result.ok{background:var(--correct-bg);border-left:3px solid var(--correct-border);color:var(--text)}
+.answer-result.fail{background:var(--wrong-bg);border-left:3px solid var(--wrong-border);color:var(--text)}
+.answer-result .label{font-weight:700;margin-right:.35rem}
+.answer-result.ok .label{color:#4a9c6a}
+.answer-result.fail .label{color:#c0392b}
+
 @media (max-width:680px){
   body{padding:1.2rem .7rem 3rem}
   .theme-toggle{width:42px;height:42px;font-size:1.15rem;top:.9rem;right:.9rem}
   .battle-header{padding:.85rem 1rem;gap:.7rem}
   .battle-index{width:28px;height:28px;font-size:.7rem}
   .battle-details-inner{padding-left:1rem;padding-right:1rem}
-  .battle-item.open .battle-details-inner{padding:.9rem 1rem 1.1rem}
+  .battle-item.open .battle-details-inner{padding:1rem 1rem 0}
   .detail-section{padding:.7rem .8rem}
   .detail-text{font-size:.85rem;text-align:left}
   .arrow{width:24px;height:24px;font-size:.75rem}
+  .scroll-content{max-height:320px}
+  .fipi-task{font-size:.78rem;padding:.65rem .75rem}
+  .answer-input{font-size:.8rem;padding:.45rem .6rem}
+  .check-btn{font-size:.75rem;padding:.45rem .85rem}
+  .resize-handle{height:40px}
+  .resize-handle .resize-label{font-size:.65rem}
 }
-::-webkit-scrollbar{width:8px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:4px;border:2px solid var(--bg)}
-::-webkit-scrollbar-thumb:hover{background:var(--accent)}
 </style>
 </head>
 <body>
@@ -286,7 +462,7 @@ header .years{
   <header>
     <div class="header-emblem">★</div>
     <h1>Хроника Великой Отечественной войны</h1>
-    <p class="subtitle">Битвы · Командующие · Ход · Итоги</p>
+    <p class="subtitle">Битвы · Командующие · Ход · Итоги · Задания ФИПИ</p>
     <span class="years">1941 — 1945</span>
   </header>
 
@@ -295,990 +471,955 @@ header .years{
     <button class="control-btn" id="collapseAll">Свернуть все</button>
   </div>
 
-  <!-- 1941 -->
-  <section class="year-section">
-    <h2 class="year-title">1941 год <span class="year-line"></span></h2>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">01</span>
-        <div class="battle-title-wrap">
-          <h3>Оборона Бреста</h3>
-          <span class="date-badge">Июнь–июль 1941</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Участники</div>
-          <p class="detail-text names">П.М. Гаврилов, И.Н. Зубачев, Е.М. Фомин, А.М. Кижеватов</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">С первых часов войны гарнизон Брестской крепости оказался в окружении. Немецкие войска, имея многократное превосходство, рассчитывали взять крепость за несколько часов. Однако бойцы под командованием Гаврилова, Зубачева, Фомина и Кижеватова организовали упорную оборону. Отдельные группы сражались в подвалах и казематах более месяца, даже когда крепость официально уже была оставлена. Оборона стала символом стойкости советских солдат в первые дни войны.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/A.png" alt="Схема обороны Брестской крепости, 1941 г." loading="lazy">
-          </div>
-          <p class="map-caption">Схема обороны Брестской крепости, 1941 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Сдача крепости.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">02</span>
-        <div class="battle-title-wrap">
-          <h3>Смоленское сражение</h3>
-          <span class="date-badge">Июль–сентябрь 1941</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">С.К. Тимошенко (Западный фронт), В.Я. Качалов, В.А. Хоменко, С.А. Калинин, И.И. Масленников, К.К. Рокоссовский, А.И. Еременко (Брянский фронт).</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Немецкая группа армий «Центр» стремилась прорваться к Москве через Смоленск. Советские войска Западного, Резервного и Брянского фронтов вели тяжёлые оборонительные бои, неоднократно контратакуя. В районе Смоленска развернулось крупное танковое сражение. Особую роль сыграли соединения Рокоссовского и Еременко. Несмотря на отступление, советское командование впервые заставило немцев перейти к обороне на этом направлении.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/B.jpg" alt="Карта Смоленского сражения, 1941 г." loading="lazy">
-          </div>
-          <p class="map-caption">Карта боевых действий на Смоленском направлении, 1941 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Предпринята первая попытка контрнаступления, немецкие войска впервые перешли к обороне.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">03</span>
-        <div class="battle-title-wrap">
-          <h3>Московская битва (операция «Тайфун»)</h3>
-          <span class="date-badge">Сентябрь 1941 – апрель 1942</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Г.К. Жуков (Западный фронт), И.С. Конев (Калининский фронт), С.К. Тимошенко (Юго-Западный фронт), К.К. Рокоссовский (16-я армия), И.В. Панфилов (316-я стрелковая дивизия), В.В. Клочков (политрук 4-й роты), И.В. Болдин.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Немецкое командование начало операцию «Тайфун» с целью захвата Москвы. В октябре 1941 года враг прорвал оборону и окружил крупные силы советских войск под Вязьмой и Брянском. Критический момент наступил в конце октября – ноябре, когда бои шли в 80–100 км от столицы. Дивизия Панфилова насмерть стояла на Волоколамском направлении. 5–6 декабря 1941 года Красная Армия перешла в контрнаступление, отбросив врага на 150–400 км. Это было первое крупное поражение вермахта.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/C.webp" alt="Карта битвы под Москвой, 1941–1942 гг." loading="lazy">
-          </div>
-          <p class="map-caption">Великая битва под Москвой. Карта обороны и разгрома немецких войск.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Крах стратегии блицкрига, укрепление международного авторитета СССР и ускорение создания антигитлеровской коалиции.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">04</span>
-        <div class="battle-title-wrap">
-          <h3>Блокада Ленинграда</h3>
-          <span class="date-badge">8 сентября 1941 – 27 января 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующий</div>
-          <p class="detail-text names">Г.К. Жуков (упомянут в файле в этом контексте).</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">8 сентября 1941 года немецкие войска замкнули кольцо вокруг Ленинграда. Началась 872-дневная блокада. Единственной связью с большой землёй стала «Дорога жизни» через Ладожское озеро. Город подвергался постоянным обстрелам и бомбардировкам, свирепствовал голод. Несмотря на это, ленинградцы продолжали работать и сражаться. Неоднократные попытки прорыва блокады увенчались успехом лишь в январе 1943 года (операция «Искра»), а полное освобождение произошло 27 января 1944 года.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/D.jpg" alt="Карта блокады Ленинграда" loading="lazy">
-          </div>
-          <p class="map-caption">Карта блокады Ленинграда 1941–1944 гг.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Полное снятие блокады 27 января 1944 года. В файле указан как период, итог не выделен отдельно.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">05</span>
-        <div class="battle-title-wrap">
-          <h3>Тихвинская операция</h3>
-          <span class="date-badge">Ноябрь–декабрь 1941</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующий</div>
-          <p class="detail-text names">Не указан в файле.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Немецкое командование стремилось соединиться с финскими войсками восточнее Ленинграда и полностью замкнуть блокаду. В ноябре 1941 года советские войска нанесли контрудар под Тихвином. В ходе упорных боёв город был освобождён, а немецкие части отброшены за реку Волхов. Это сорвало планы противника и не позволило создать второе кольцо блокады.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/E.webp" alt="Карта Тихвинской операции 1941 г." loading="lazy">
-          </div>
-          <p class="map-caption">Тихвинская наступательная операция, 10 ноября – 30 декабря 1941 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Предотвращение соединения немецких и финских войск, полная блокада Ленинграда.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">06</span>
-        <div class="battle-title-wrap">
-          <h3>Оборона Севастополя</h3>
-          <span class="date-badge">Октябрь 1941 – июль 1942</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Петров И.Е. (Приморская армия), Ф.П. Октябрьский (Черноморский флот).</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Севастополь стал главной базой Черноморского флота. С октября 1941 года началась героическая оборона города. Немецкие войска предприняли несколько штурмов, но защитники при поддержке кораблей флота держались 250 дней. Лишь в июле 1942 года, после ожесточённых боёв и больших потерь, город был оставлен. Оборона Севастополя сковала крупные силы врага на южном направлении.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/F.webp" alt="Схема обороны Севастополя 1941–1942 гг." loading="lazy">
-          </div>
-          <p class="map-caption">Схема обороны Севастополя, 5 ноября 1941 – 4 июля 1942 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Потеря Севастополя.</p>
-        </div>
-      </div></div>
-    </div>
-  </section>
-
-  <!-- 1942 -->
-  <section class="year-section">
-    <h2 class="year-title">1942 год <span class="year-line"></span></h2>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">07</span>
-        <div class="battle-title-wrap">
-          <h3>Харьковская наступательная операция</h3>
-          <span class="date-badge">Май 1942</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">С.К. Тимошенко (Юго-Западный фронт), Р.Я. Малиновский (Южный фронт).</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советское командование планировало крупное наступление на Харьков, чтобы освободить город и создать условия для дальнейшего продвижения. Однако немецкие войска упредили удар, окружив значительные силы Юго-Западного фронта. В результате операции советские войска потерпели тяжёлое поражение, потеряв две армии. Стратегическая инициатива на южном направлении перешла к вермахту, что открыло путь к Сталинграду и Кавказу.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/G.webp" alt="Карта Харьковской операции 1942 г." loading="lazy">
-          </div>
-          <p class="map-caption">Харьковская наступательная операция, май 1942 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Поражение, уничтожены войска двух армий, стратегическая инициатива перешла к немецкому командованию.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">08</span>
-        <div class="battle-title-wrap">
-          <h3>Ржевско-Вяземская операция («Ржевская мясорубка»)</h3>
-          <span class="date-badge">Март 1942</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">В.Д. Соколовский, М.А. Пуркаев.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">В ходе зимнего контрнаступления 1941–1942 годов советские войска стремились разгромить группу армий «Центр» и освободить Ржев и Вязьму. Бои приняли затяжной и крайне кровопролитный характер. Несмотря на огромные потери, полностью выполнить задачу не удалось, но противник был вынужден перейти к обороне на этом участке. Ржевско-Вяземский выступ стал символом ожесточённых и безуспешных атак Красной Армии.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/H.png" alt="Карта Ржевско-Вяземской операции 1942 г." loading="lazy">
-          </div>
-          <p class="map-caption">Ржевско-Вяземская операция, 1942 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение городов Ржев и Вязьма.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">09</span>
-        <div class="battle-title-wrap">
-          <h3>Сталинградская битва (операции «Уран» и «Кольцо»)</h3>
-          <span class="date-badge">1942–1943</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие и участники</div>
-          <p class="detail-text names">К.К. Рокоссовский (Донской фронт), Н.Ф. Ватутин (Юго-Западный фронт), А.И. Ерёменко (Сталинградский фронт), В.И. Чуйков (62-я армия), М.С. Шумилов (64-я армия), Я.Ф. Павлов (сержант, участник обороны дома Павлова), Р.Я. Малиновский.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Летом 1942 года немецкие войска вышли к Сталинграду, стремясь захватить город и перерезать Волгу. Начались упорные уличные бои, особенно в районе «дома Павлова». 19 ноября 1942 года Красная Армия перешла в контрнаступление (операция «Уран»), окружив 330-тысячную группировку врага. В январе–феврале 1943 года в ходе операции «Кольцо» окружённые войска были разгромлены, фельдмаршал Паулюс взят в плен. Это стало началом коренного перелома в войне.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/I.jpeg" alt="Карта Сталинградской битвы" loading="lazy">
-          </div>
-          <p class="map-caption">Сталинградская битва. Карта боевых действий 1942–1943 гг.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Начало коренного перелома в войне, складывание антигитлеровской коалиции.</p>
-        </div>
-      </div></div>
-    </div>
-  </section>
-
-  <!-- 1943 -->
-  <section class="year-section">
-    <h2 class="year-title">1943 год <span class="year-line"></span></h2>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">10</span>
-        <div class="battle-title-wrap">
-          <h3>Битва за Кавказ</h3>
-          <span class="date-badge">Зима 1943</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Не указаны в файле.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Летом 1942 года немецкие войска начали наступление на Кавказ, стремясь захватить нефтяные промыслы Грозного и Баку. Советские войска вели тяжёлые оборонительные бои, остановив врага у Орджоникидзе и на перевалах Главного Кавказского хребта. В январе 1943 года началось контрнаступление, в результате которого были освобождены значительные территории Кавказа и Ростовская область. Угроза потери нефтяных районов была ликвидирована.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/J.webp" alt="Карта битвы за Кавказ" loading="lazy">
-          </div>
-          <p class="map-caption">Битва за Кавказ, 1942–1943 гг.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Кавказа и Ростовской области.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">11</span>
-        <div class="battle-title-wrap">
-          <h3>Операция «Искра»</h3>
-          <span class="date-badge">Январь 1943</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Л.А. Говоров (Ленинградский фронт), К.А. Мерецков (Волховский фронт).</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Целью операции было прорвать блокаду Ленинграда. Войска Ленинградского и Волховского фронтов нанесли встречные удары южнее Ладожского озера. Несмотря на тяжёлые бои и большие потери, 18 января 1943 года кольцо блокады было прорвано. Был создан коридор шириной 8–11 км, что позволило наладить железнодорожное сообщение с городом. Это стало первым крупным успехом под Ленинградом.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/K.webp" alt="Карта операции «Искра», 1943 г." loading="lazy">
-          </div>
-          <p class="map-caption">Операция «Искра». Прорыв блокады Ленинграда, январь 1943 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Прорыв блокады Ленинграда (18 января 1943 г.).</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">12</span>
-        <div class="battle-title-wrap">
-          <h3>Курская битва («Цитадель»). Сражение под Прохоровкой. Операции «Кутузов» и «Полководец Румянцев»</h3>
-          <span class="date-badge">Июль–август 1943</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие и участники</div>
-          <p class="detail-text names">К.К. Рокоссовский (Центральный фронт), Н.Ф. Ватутин (Воронежский фронт), П.А. Ротмистров, И.С. Конев (Степной фронт), И.Н. Кожедуб (лётчик-истребитель).</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Немецкое командование планировало операцию «Цитадель» — наступление на Курском выступе. Советская разведка своевременно вскрыла планы врага, и оборона была подготовлена. 5 июля 1943 года немцы перешли в наступление, но завязли в глубоко эшелонированной обороне. 12 июля под Прохоровкой произошло крупнейшее танковое сражение войны. В тот же день началось контрнаступление советских войск (операции «Кутузов» и «Полководец Румянцев»). Орёл, Белгород и Харьков были освобождены.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/L.webp" alt="Карта Курской битвы, 1943 г." loading="lazy">
-          </div>
-          <p class="map-caption">Курская битва. Карта боевых действий, июль–август 1943 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Орла, Харькова и Белгорода, дан первый артиллерийский салют с начала войны.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">13</span>
-        <div class="battle-title-wrap">
-          <h3>Битва за Днепр (операция «Концерт»)</h3>
-          <span class="date-badge">Август–декабрь 1943</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Г.К. Жуков, А.М. Василевский.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">После Курской битвы Красная Армия устремилась к Днепру. Немецкое командование создало мощный оборонительный рубеж — «Восточный вал». Советские войска с ходу форсировали Днепр на многих участках, захватывая плацдармы. Особенно ожесточённые бои шли за Киев, который был освобождён в ноябре 1943 года. Битва за Днепр завершила коренной перелом в войне и создала условия для освобождения Правобережной Украины.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/M.jpg" alt="Карта битвы за Днепр, 1943 г." loading="lazy">
-          </div>
-          <p class="map-caption">Битва за Днепр, август–декабрь 1943 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Форсирование Днепра, освобождение Киева, битва завершила коренной перелом в войне.</p>
-        </div>
-      </div></div>
-    </div>
-  </section>
-
-  <!-- 1944 -->
-  <section class="year-section">
-    <h2 class="year-title">1944 год · Десять «сталинских ударов» <span class="year-line"></span></h2>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">14</span>
-        <div class="battle-title-wrap">
-          <h3>Ленинградско-Новгородская операция</h3>
-          <span class="date-badge">Январь 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Л.А. Говоров (Ленинградский фронт), К.А. Мерецков (Волховский фронт), М.М. Попов (2-й Прибалтийский фронт).</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">В январе 1944 года советские войска начали наступление под Ленинградом и Новгородом. В ходе упорных боёв немецкая группа армий «Север» была разгромлена и отброшена от города. 27 января 1944 года блокада Ленинграда была полностью снята. Город впервые за 872 дня почувствовал свободу. Операция позволила освободить значительную часть Ленинградской области.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/N.webp" alt="Карта Ленинградско-Новгородской операции 1944 г." loading="lazy">
-          </div>
-          <p class="map-caption">Ленинградско-Новгородская операция, январь 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">27 января 1944 г. — полное снятие блокады Ленинграда.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">15</span>
-        <div class="battle-title-wrap">
-          <h3>Днепровско-Карпатская операция + Корсунь-Шевченковская операция</h3>
-          <span class="date-badge">Декабрь 1943 – апрель 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Н.Ф. Ватутин, И.С. Конев.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска продолжали освобождение Правобережной Украины. В январе–феврале 1944 года в районе Корсуни были окружены и разгромлены крупные силы врага. В марте началось наступление, в ходе которого советские войска вышли к Карпатам. Были освобождены Винница, Житомир, Ровно и другие города. Противник понёс тяжёлые потери.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/O.jpg" alt="Карта Днепровско-Карпатской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Днепровско-Карпатская операция, 1943–1944 гг.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Правобережной Украины.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">16</span>
-        <div class="battle-title-wrap">
-          <h3>Одесская и Крымская операции</h3>
-          <span class="date-badge">Март–май 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Ф.И. Толбухин, А.И. Ерёменко, Ф.С. Октябрьский, Р.Я. Малиновский.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">В марте 1944 года советские войска начали наступление на юге Украины. Одесса была освобождена 10 апреля. В апреле–мае развернулась Крымская операция. Немецкие войска, блокированные в Крыму, оказывали упорное сопротивление, но были разгромлены. 9 мая 1944 года был освобождён Севастополь. Крым полностью вернулся под контроль СССР.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/P.webp" alt="Карта Крымской операции 1944 г." loading="lazy">
-          </div>
-          <p class="map-caption">Крымская наступательная операция, 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Одессы и Крыма, 9 мая 1944 г. — освобождение Севастополя.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">17</span>
-        <div class="battle-title-wrap">
-          <h3>Выборгско-Петрозаводская операция</h3>
-          <span class="date-badge">Июнь–август 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Л.А. Говоров (Ленинградский фронт), К.А. Мерецков (Карельский фронт).</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Целью операции было вывести Финляндию из войны. Советские войска нанесли удары на Карельском перешейке и в Южной Карелии. Были освобождены Выборг и Петрозаводск. Финское правительство, осознав безнадёжность сопротивления, пошло на переговоры. В сентябре 1944 года было подписано перемирие между Финляндией, СССР и Великобританией.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/Q.webp" alt="Карта Выборгско-Петрозаводской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Выборгско-Петрозаводская операция, 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Подписано перемирие между Финляндией, СССР и Великобританией.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">18</span>
-        <div class="battle-title-wrap">
-          <h3>Белорусская операция («Багратион»)</h3>
-          <span class="date-badge">Июнь–август 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие и участники</div>
-          <p class="detail-text names">И.Х. Баграмян (разработчик плана), К.К. Рокоссовский, И.Д. Черняховский, Г.Ф. Захаров, Г.К. Жуков.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Одна из крупнейших наступательных операций в истории. Советские войска нанесли удары по группе армий «Центр» на территории Белоруссии. Были освобождены Витебск, Орша, Могилёв, Минск (3 июля 1944 года). В «Минском котле» оказались окружены крупные силы врага. Наступление продолжилось в Литве и Польше, советские войска вышли на довоенную границу СССР. Операция «Багратион» стала триумфом советского военного искусства.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/R.jpeg" alt="Карта операции «Багратион», 1944 г." loading="lazy">
-          </div>
-          <p class="map-caption">Белорусская наступательная операция «Багратион», 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Минска, Львова, большей части Польши, выход на довоенную границу СССР.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">19</span>
-        <div class="battle-title-wrap">
-          <h3>Львовско-Сандомирская операция</h3>
-          <span class="date-badge">Июль–август 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">И.С. Конев, И.Е. Петров.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска 1-го Украинского фронта нанесли удар в Западной Украине. Были освобождены Львов, Перемышль и другие города. Форсировав Вислу, советские войска захватили Сандомирский плацдарм, который стал важным рубежом для дальнейшего наступления на Берлин. Противник понёс серьёзные потери.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/S.jpg" alt="Карта Львовско-Сандомирской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Львовско-Сандомирская операция, 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Западной Украины.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">20</span>
-        <div class="battle-title-wrap">
-          <h3>Ясско-Кишиневская и Румынская операции</h3>
-          <span class="date-badge">Август–октябрь 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Р.Я. Малиновский, Ф.И. Толбухин.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">В августе 1944 года советские войска начали Ясско-Кишиневскую операцию. Была окружена и разгромлена крупная немецко-румынская группировка. 24 августа Румыния объявила о выходе из войны и повернула оружие против Германии. Советские войска вошли в Болгарию, которая также вышла из войны. Освобождение Молдавии завершилось.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/T.webp" alt="Карта Ясско-Кишиневской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Ясско-Кишиневская операция, 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Молдовской ССР, Румыния и Болгария вышли из войны.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">21</span>
-        <div class="battle-title-wrap">
-          <h3>Прибалтийская операция</h3>
-          <span class="date-badge">Сентябрь–ноябрь 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">А.М. Василевский, Л.А. Говоров.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска нанесли удары по немецкой группе армий «Север» в Прибалтике. Были освобождены Литва, Эстония и большая часть Латвии. Остатки немецких войск были блокированы в Курляндском котле. Финляндия, видя поражение Германии, объявила ей войну. Операция завершила освобождение Прибалтики.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/U.jpg" alt="Карта Прибалтийской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Прибалтийская операция, 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Литовской, Эстонской и большей части Латвийской ССР. Курляндский котёл. Финляндия вынуждена объявить войну Германии.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">22</span>
-        <div class="battle-title-wrap">
-          <h3>Восточно-Карпатская и Белградская операции</h3>
-          <span class="date-badge">Сентябрь–октябрь 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">И.Е. Петров, Р.Я. Малиновский.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска продвигались в Восточные Карпаты и на Балканы. В ходе Белградской операции совместно с югославскими партизанами был освобождён Белград (20 октября 1944 года). Были освобождены Закарпатская Украина и значительная часть Венгрии. Венгрия объявила войну Германии.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/V.jpg" alt="Карта Белградской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Белградская операция, 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Венгрии, Закарпатской Украины. Венгрия объявила войну Германии.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">23</span>
-        <div class="battle-title-wrap">
-          <h3>Петсамо-Киркенесская операция</h3>
-          <span class="date-badge">Октябрь 1944</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующий</div>
-          <p class="detail-text names">К.А. Мерецков.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска Карельского фронта нанесли удар в Заполярье. Были освобождены Печенга и Киркенес (Норвегия). Немецкие войска были выбиты из северных районов. Угроза северным морским путям СССР была ликвидирована. Советские войска вступили на территорию Норвегии.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/W.jpg" alt="Карта Петсамо-Киркенесской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Петсамо-Киркенесская операция, октябрь 1944 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Печенги (Заполярье), ликвидация угрозы северным морским путям СССР. Советские войска вошли в Норвегию.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">24</span>
-        <div class="battle-title-wrap">
-          <h3>Будапештская операция</h3>
-          <span class="date-badge">Октябрь 1944 – февраль 1945</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Р.Я. Малиновский, Ф.И. Толбухин.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска начали наступление на Будапешт в октябре 1944 года. Город был окружён в декабре. Немецко-венгерская группировка оказывала упорное сопротивление. Бои за Будапешт продолжались до февраля 1945 года. Город был взят, что ускорило освобождение Венгрии и открыло путь на Вену.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/X.webp" alt="Карта Будапештской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Будапештская операция, 1944–1945 гг.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Будапешта.</p>
-        </div>
-      </div></div>
-    </div>
-  </section>
-
-  <!-- 1945 -->
-  <section class="year-section">
-    <h2 class="year-title">1945 год <span class="year-line"></span></h2>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">25</span>
-        <div class="battle-title-wrap">
-          <h3>Висло-Одерская операция</h3>
-          <span class="date-badge">Январь–февраль 1945</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Г.К. Жуков, И.С. Конев.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска начали наступление от Вислы к Одеру. Были освобождены Варшава (17 января 1945 года), Краков, Познань. Советские войска вышли к Одеру, создав плацдармы для удара по Берлину. Наступление было стремительным и успешным.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/Y.jpg" alt="Карта Висло-Одерской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Висло-Одерская операция, 1945 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Варшавы.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">26</span>
-        <div class="battle-title-wrap">
-          <h3>Восточно-Померанская операция</h3>
-          <span class="date-badge">Февраль–апрель 1945</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">К.К. Рокоссовский, Г.К. Жуков.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска нанесли удар в Восточной Померании. Были освобождены Данциг (Гданьск) и Гдыня. Противник был отброшен за Одер. Операция обеспечила безопасность флангов советских войск, наступавших на Берлин.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/Z.webp" alt="Карта Восточно-Померанской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Восточно-Померанская операция, 1945 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Данцига и Гдыни, форсирование Одера.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">27</span>
-        <div class="battle-title-wrap">
-          <h3>Восточно-Прусская операция</h3>
-          <span class="date-badge">Январь–апрель 1945</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">К.К. Рокоссовский, И.Д. Черняховский, А.М. Василевский.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска начали наступление в Восточной Пруссии. Бои носили крайне ожесточённый характер. 9 апреля 1945 года был взят Кёнигсберг. Остатки немецких войск капитулировали. Восточно-Прусская группировка врага была полностью разгромлена.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/ZAQ.gif" alt="Карта Восточно-Прусской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Восточно-Прусская операция, 1945 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Кенигсберга.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">28</span>
-        <div class="battle-title-wrap">
-          <h3>Венская операция</h3>
-          <span class="date-badge">Март–апрель 1945</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие</div>
-          <p class="detail-text names">Ф.И. Толбухин, Р.Я. Малиновский.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Советские войска наступали на Вену. Немецкое командование стремилось превратить город в неприступную крепость. Однако советские войска обошли город с флангов и 13 апреля 1945 года освободили Вену. Австрия была освобождена от немецкой оккупации.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/ZED.jpg" alt="Карта Венской операции" loading="lazy">
-          </div>
-          <p class="map-caption">Венская операция, 1945 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Освобождение Вены.</p>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="battle-item">
-      <div class="battle-header">
-        <span class="battle-index">29</span>
-        <div class="battle-title-wrap">
-          <h3>Берлинская операция</h3>
-          <span class="date-badge">Апрель–май 1945</span>
-        </div>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="battle-details"><div class="battle-details-inner">
-        <div class="detail-section commanders">
-          <div class="section-label"><span class="icon">⚔</span> Командующие и участники</div>
-          <p class="detail-text names">М.А. Егоров, М.В. Кантария (сержанты, водрузившие Знамя Победы над рейхстагом), Г.К. Жуков, И.С. Конев, К.К. Рокоссовский.</p>
-        </div>
-        <div class="detail-section course">
-          <div class="section-label"><span class="icon">📜</span> Ход битвы</div>
-          <p class="detail-text">Заключительная операция Великой Отечественной войны. Советские войска 1-го и 2-го Белорусских и 1-го Украинского фронтов начали штурм Берлина 16 апреля 1945 года. После упорных боёв 30 апреля 1945 года сержанты Егоров и Кантария водрузили Знамя Победы над рейхстагом. 2 мая 1945 года Берлин капитулировал. 8 мая 1945 года был подписан Акт о безоговорочной капитуляции Германии.</p>
-        </div>
-        <div class="detail-section map-section">
-          <div class="section-label"><span class="icon">🗺</span> Карта-схема</div>
-          <div class="map-frame">
-            <img src="images/ZZX.webp" alt="Карта Берлинской операции, 1945 г." loading="lazy">
-          </div>
-          <p class="map-caption">Берлинская стратегическая наступательная операция, 1945 г.</p>
-        </div>
-        <div class="detail-section outcome">
-          <div class="section-label"><span class="icon">✦</span> Итог</div>
-          <p class="detail-text">Взятие Берлина.</p>
-        </div>
-      </div></div>
-    </div>
-  </section>
-
+  <div id="battles-root"></div>
 </div>
 
 <script>
 (function(){
   'use strict';
 
-  var themeToggle = document.getElementById('themeToggle');
-  var themeIcon = document.getElementById('themeIcon');
-  var htmlEl = document.documentElement;
+  /* ================================================================
+     ДАННЫЕ ВСЕХ БИТВ
+     ================================================================ */
+  const BATTLES = [
+    /* ============ 1941 ============ */
+    {
+      year: 1941,
+      index: '01',
+      title: 'Оборона Бреста',
+      date: '22 июня – июль 1941',
+      img: 'images/A.png',
+      imgCaption: 'Схема обороны Брестской крепости, 1941 г.',
+      commandersLabel: 'Участники',
+      commanders: 'П.М. Гаврилов, И.Н. Зубачев, Е.М. Фомин, А.М. Кижеватов',
+      course: [
+        'Брестская крепость первой приняла удар немецких войск 22 июня 1941 года. Гарнизон, насчитывавший около 3,5 тысяч человек, оказался в полном окружении уже в первые часы войны. Немецкое командование, имея многократное превосходство в силах и артиллерии, рассчитывало взять крепость за несколько часов — к исходу первого дня наступления.',
+        'Однако бойцы под командованием майора П.М. Гаврилова, капитана И.Н. Зубачева, полкового комиссара Е.М. Фомина и лейтенанта А.М. Кижеватова организовали упорную оборону. Штурмовые группы вермахта несли большие потери, захлёбываясь в узких коридорах и казематах. Крепость оборонялась не как обычный укреплённый пункт, а как настоящая крепость-цитадель.',
+        'Отдельные группы защитников сражались в подвалах и казематах более месяца — до конца июля. На стенах крепости остались надписи: «Умираем, но не сдаёмся!», «Прощай, Родина!». Даже когда крепость официально была оставлена, в её развалинах продолжали биться одиночные бойцы.',
+        'Оборона Брестской крепости стала символом стойкости и массового героизма советских солдат в первые, самые тяжёлые дни войны. Она показала, что план блицкрига даёт сбой с первых часов.'
+      ],
+      outcome: 'Сдача крепости. В 1965 году Брестской крепости присвоено звание «Крепость-герой».',
+      tasks: [
+        { q:'Заполните пропуск: «Оборона Брестской крепости началась в ______ 1941 года».', answer:'июне|июнь|июн' },
+        { q:'Укажите фамилию майора, руководившего обороной Восточного форта Брестской крепости.', answer:'гаврилов|п.м. гаврилов|п м гаврилов' },
+        { q:'В каком году Брест был освобождён советскими войсками?', answer:'1944|1944 г|1944 год' },
+        { q:'Укажите название реки, на которой расположена Брестская крепость.', answer:'западный буг|западныйбуг|буг' },
+        { q:'Назовите дату начала обороны Брестской крепости.', answer:'22 июня|22 июня 1941|22.06.1941' },
+        { q:'В каком году Брестской крепости было присвоено звание «Крепость-герой»?', answer:'1965' },
+        { q:'Назовите фамилию полкового комиссара — одного из руководителей обороны Брестской крепости.', answer:'фомин|е.м. фомин|е м фомин' },
+        { q:'На территории какой республики находится Брестская крепость?', answer:'белоруссия|беларусь|бсср' }
+      ]
+    },
+    {
+      year: 1941,
+      index: '02',
+      title: 'Смоленское сражение',
+      date: '10 июля – 10 сентября 1941',
+      img: 'images/B.jpg',
+      imgCaption: 'Карта боевых действий на Смоленском направлении, 1941 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'С.К. Тимошенко (Западный фронт), В.Я. Качалов, В.А. Хоменко, С.А. Калинин, И.И. Масленников, К.К. Рокоссовский, А.И. Еременко (Брянский фронт)',
+      course: [
+        'Смоленское сражение стало одним из крупнейших оборонительных и наступательных сражений первого периода войны. Немецкая группа армий «Центр» стремилась кратчайшим путём прорваться к Москве через Смоленск — «ключ-город» на пути к столице.',
+        'Советские войска Западного, Резервного и Брянского фронтов вели тяжёлые оборонительные бои, постоянно контратакуя. В районе Смоленска развернулось крупное танковое сражение, в котором с обеих сторон участвовали сотни машин.',
+        'Особую роль сыграли соединения под командованием К.К. Рокоссовского и А.И. Еременко. В ходе сражения советское командование впервые применило новые артиллерийские и танковые соединения, а также впервые провело крупную наступательную операцию — Рославльско-Новозыбковскую.',
+        'Главный итог сражения: впервые за всю кампанию немецкие войска были вынуждены перейти к обороне на главном направлении. План молниеносной войны дал первую серьёзную трещину. Задержка под Смоленском позволила советскому командованию выиграть время для подготовки обороны Москвы.'
+      ],
+      outcome: 'Предпринята первая попытка контрнаступления, немецкие войска впервые перешли к обороне. Смоленск был оставлен 29 июля 1941 года.',
+      tasks: [
+        { q:'Укажите фамилию командующего Западным фронтом в Смоленском сражении.', answer:'тимошенко|с.к. тимошенко|с к тимошенко' },
+        { q:'Назовите немецкую группу армий, наступавшую на Смоленск.', answer:'центр|группа армий центр' },
+        { q:'В каком году Смоленск был освобождён советскими войсками?', answer:'1943|1943 г' },
+        { q:'Назовите фамилию командующего 16-й армией, особо отличившегося в Смоленском сражении.', answer:'рокоссовский|к.к. рокоссовский|к к рокоссовский' },
+        { q:'Укажите фамилию командующего Брянским фронтом в Смоленском сражении.', answer:'еременко|а.и. еременко|а и еременко' },
+        { q:'В каком месяце 1941 года началось Смоленское сражение?', answer:'июль|июле|июль 1941' },
+        { q:'Какое крупное сражение развернулось в районе Смоленска?', answer:'танковое|танковое сражение' },
+        { q:'В каком месяце 1941 года завершилось Смоленское сражение?', answer:'сентябрь|сентябре' }
+      ]
+    },
+    {
+      year: 1941,
+      index: '03',
+      title: 'Московская битва (операция «Тайфун»)',
+      date: '30 сентября 1941 – 20 апреля 1942',
+      img: 'images/C.webp',
+      imgCaption: 'Великая битва под Москвой. Карта обороны и разгрома немецких войск.',
+      commandersLabel: 'Командующие',
+      commanders: 'Г.К. Жуков (Западный фронт), И.С. Конев (Калининский фронт), С.К. Тимошенко (Юго-Западный фронт), К.К. Рокоссовский (16-я армия), И.В. Панфилов (316-я стрелковая дивизия), В.В. Клочков (политрук 4-й роты), И.В. Болдин',
+      course: [
+        'Немецкое командование начало операцию «Тайфун» — генеральное наступление на Москву. План предусматривал окружение и уничтожение основных сил Западного, Резервного и Брянского фронтов, после чего должен был последовать захват столицы.',
+        'В октябре 1941 года враг прорвал оборону и окружил крупные силы советских войск под Вязьмой и Брянском. Критический момент наступил в конце октября – ноябре, когда бои шли в 80–100 км от столицы. Москва была объявлена на осадном положении; из неё эвакуировали правительство, дипломатический корпус и крупные предприятия.',
+        '7 ноября 1941 года на Красной площади состоялся знаменитый военный парад — прямо с парада войска уходили на фронт. Это событие укрепило дух армии и народа.',
+        'Дивизия генерала И.В. Панфилова насмерть стояла на Волоколамском направлении. У разъезда Дубосеково 28 панфиловцев во главе с политруком В.В. Клочковым приняли неравный бой с танками, произнеся слова: «Велика Россия, а отступать некуда — позади Москва!».',
+        '5–6 декабря 1941 года Красная Армия перешла в контрнаступление, отбросив врага на 150–400 км. Это было первое крупное поражение вермахта во Второй мировой войне. Миф о непобедимости немецкой армии был разрушен.'
+      ],
+      outcome: 'Крах стратегии блицкрига, укрепление международного авторитета СССР и ускорение создания антигитлеровской коалиции.',
+      tasks: [
+        { q:'Назовите кодовое название немецкой операции по захвату Москвы.', answer:'тайфун|«тайфун»' },
+        { q:'Укажите фамилию командующего Западным фронтом в Московской битве.', answer:'жуков|г.к. жуков|г к жуков' },
+        { q:'Когда началось контрнаступление советских войск под Москвой?', answer:'5 декабря|5-6 декабря|декабрь 1941' },
+        { q:'Назовите фамилию командира 316-й стрелковой дивизии, оборонявшей Волоколамское направление.', answer:'панфилов|и.в. панфилов' },
+        { q:'Назовите фамилию политрука 4-й роты, произнёсшего слова «Велика Россия, а отступать некуда».', answer:'клочков|в.в. клочков' },
+        { q:'В каком месяце 1941 года началась Московская битва?', answer:'сентябрь|сентябре 1941' },
+        { q:'Назовите фамилию командующего Калининским фронтом в Московской битве.', answer:'конев|и.с. конев' },
+        { q:'В каком месяце 1942 года завершилась Московская битва?', answer:'апрель 1942|апреле 1942|апрель' }
+      ]
+    },
+    {
+      year: 1941,
+      index: '04',
+      title: 'Блокада Ленинграда',
+      date: '8 сентября 1941 – 27 января 1944',
+      img: 'images/D.jpg',
+      imgCaption: 'Карта блокады Ленинграда 1941–1944 гг.',
+      commandersLabel: 'Командующие',
+      commanders: 'Г.К. Жуков, Л.А. Говоров (Ленинградский фронт), К.А. Мерецков (Волховский фронт)',
+      course: [
+        '8 сентября 1941 года немецкие войска замкнули кольцо вокруг Ленинграда, захватив Шлиссельбург. Началась 872-дневная блокада — самая длительная и трагическая осада в истории человечества.',
+        'Единственной связью с большой землёй стала «Дорога жизни» через Ладожское озеро: летом — по воде, зимой — по льду. По ней в город доставляли продовольствие, медикаменты, топливо, а обратно вывозили детей, раненых, истощённых людей и культурные ценности.',
+        'Город подвергался постоянным артиллерийским обстрелам и авиабомбардировкам. Свирепствовал голод: рабочие получали по 250 г хлеба в день, служащие, иждивенцы и дети — по 125 г. Хлеб состоял в основном из жмыха, целлюлозы, обойной пыли. Люди умирали целыми семьями, но город продолжал жить: работали заводы, театры, библиотеки, дети учились в школах.',
+        'Неоднократные попытки прорыва блокады увенчались успехом лишь в январе 1943 года (операция «Искра»): был создан узкий коридор шириной 8–11 км. Полное освобождение произошло 27 января 1944 года в ходе Ленинградско-Новгородской операции.',
+        'За годы блокады от голода, холода и обстрелов погибли, по разным оценкам, от 600 тысяч до 1,5 миллиона человек. Ленинград стал символом невероятной стойкости и мужества.'
+      ],
+      outcome: 'Полное снятие блокады 27 января 1944 года. В 1945 году Ленинграду присвоено звание «Город-герой».',
+      tasks: [
+        { q:'Назовите дату начала блокады Ленинграда.', answer:'8 сентября|8 сентября 1941' },
+        { q:'Сколько дней длилась блокада Ленинграда? (Введите число)', answer:'872|872 дня' },
+        { q:'Как называлась единственная транспортная магистраль через Ладожское озеро?', answer:'дорога жизни|«дорога жизни»' },
+        { q:'Когда была полностью снята блокада Ленинграда?', answer:'27 января|27 января 1944' },
+        { q:'В каком году была прорвана блокада Ленинграда?', answer:'1943' },
+        { q:'Назовите кодовое название операции по прорыву блокады Ленинграда.', answer:'искра|«искра»' },
+        { q:'Назовите фамилию командующего Ленинградским фронтом.', answer:'говоров|л.а. говоров' },
+        { q:'Назовите озеро, через которое проходила «Дорога жизни».', answer:'ладожское|ладожское озеро' }
+      ]
+    },
+    {
+      year: 1941,
+      index: '05',
+      title: 'Тихвинская операция',
+      date: '10 ноября – 30 декабря 1941',
+      img: 'images/E.webp',
+      imgCaption: 'Тихвинская наступательная операция, 10 ноября – 30 декабря 1941 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'К.А. Мерецков (4-я армия), Н.К. Клыков (52-я армия)',
+      course: [
+        'Немецкое командование стремилось соединиться с финскими войсками восточнее Ленинграда, полностью замкнуть блокаду и создать второе кольцо окружения. Для этого был нанесён удар в направлении Тихвина.',
+        'В ноябре 1941 года советские войска нанесли контрудар под Тихвином. В ходе упорных боёв 9 декабря город был освобождён, а немецкие части отброшены за реку Волхов. Это сорвало планы противника.',
+        'Операция не позволила создать второе кольцо блокады вокруг Ленинграда и обеспечила работу «Дороги жизни» через Ладожское озеро. Немцы окончательно потеряли стратегическую инициативу на этом направлении.'
+      ],
+      outcome: 'Предотвращение соединения немецких и финских войск. Ликвидация угрозы полной изоляции Ленинграда.',
+      tasks: [
+        { q:'С войсками какой страны стремились соединиться немецкие войска под Тихвином?', answer:'финскими|финляндией|финнами' },
+        { q:'За какую реку были отброшены немецкие части в ходе операции?', answer:'волхов' },
+        { q:'В каком году была проведена Тихвинская операция?', answer:'1941' },
+        { q:'Назовите город, освобождённый в ходе операции.', answer:'тихвин' },
+        { q:'В каком месяце 1941 года началась Тихвинская операция?', answer:'ноябрь|ноябре' },
+        { q:'Что не позволила создать Тихвинская операция вокруг Ленинграда?', answer:'второе кольцо|второе кольцо блокады' },
+        { q:'В каком месяце 1941 года завершилась Тихвинская операция?', answer:'декабрь|декабре' },
+        { q:'Блокаду какого города должна была замкнуть немецкая операция?', answer:'ленинград|ленинграда' }
+      ]
+    },
+    {
+      year: 1941,
+      index: '06',
+      title: 'Оборона Севастополя',
+      date: '30 октября 1941 – 4 июля 1942',
+      img: 'images/F.webp',
+      imgCaption: 'Схема обороны Севастополя, 5 ноября 1941 – 4 июля 1942 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'И.Е. Петров (Приморская армия), Ф.С. Октябрьский (Черноморский флот)',
+      course: [
+        'Севастополь — главная база Черноморского флота — стал одним из главных объектов немецкого наступления на южном направлении. Захват города открывал путь к Кавказу и лишал СССР базы флота.',
+        'С 30 октября 1941 года началась героическая оборона Севастополя. Город защищали части Приморской армии под командованием генерала И.Е. Петрова и корабли Черноморского флота под командованием вице-адмирала Ф.С. Октябрьского.',
+        'Немецкие войска предприняли три крупных штурма (ноябрь 1941, декабрь 1941, июнь 1942). Защитники при поддержке кораблей флота, морской пехоты и авиации держались 250 дней. Под Севастополем развернулись ожесточённые бои за каждую высоту.',
+        'После третьего штурма, начавшегося 7 июня 1942 года, немецкие войска прорвали оборону. 4 июля 1942 года, после ожесточённых боёв и огромных потерь, город был оставлен. Оборона Севастополя сковала крупные силы врага на южном направлении, что помогло Красной Армии под Москвой и Сталинградом.'
+      ],
+      outcome: 'Потеря Севастополя. 9 мая 1944 года Севастополь был освобождён.',
+      tasks: [
+        { q:'Сколько дней длилась оборона Севастополя? (Введите число)', answer:'250|250 дней' },
+        { q:'Назовите фамилию командующего Приморской армией.', answer:'петров|и.е. петров' },
+        { q:'Назовите фамилию командующего Черноморским флотом.', answer:'октябрьский|ф.с. октябрьский' },
+        { q:'В каком месяце 1942 года Севастополь был оставлен советскими войсками?', answer:'июль 1942|июле 1942|июль' },
+        { q:'Назовите дату освобождения Севастополя.', answer:'9 мая 1944|9 мая|9.05.1944' },
+        { q:'В каком месяце 1941 года началась оборона Севастополя?', answer:'октябрь|октябре' },
+        { q:'Назовите флот, участвовавший в обороне Севастополя.', answer:'черноморский|черноморский флот' },
+        { q:'В каком году Севастополь был освобождён?', answer:'1944' }
+      ]
+    },
+
+    /* ============ 1942 ============ */
+    {
+      year: 1942,
+      index: '07',
+      title: 'Харьковская наступательная операция',
+      date: '12–29 мая 1942',
+      img: 'images/G.webp',
+      imgCaption: 'Харьковская наступательная операция, май 1942 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'С.К. Тимошенко (Юго-Западный фронт), Р.Я. Малиновский (Южный фронт)',
+      course: [
+        'Советское командование планировало крупное наступление на Харьков, чтобы освободить город и создать условия для дальнейшего продвижения на запад. Планировалось окружить харьковскую группировку противника.',
+        'Однако немецкие войска упредили удар, нанеся контрудар из района Краматорска. Значительные силы Юго-Западного фронта (в том числе 6-я и 57-я армии) попали в окружение в районе Барвенковского выступа.',
+        'В результате операции советские войска потерпели тяжёлое поражение, потеряв две армии — более 200 тысяч человек пленными и убитыми. Стратегическая инициатива на южном направлении полностью перешла к вермахту.',
+        'Поражение под Харьковом открыло немцам путь к Сталинграду и Кавказу, что предопределило ход летней кампании 1942 года. Это одна из самых трагических страниц войны.'
+      ],
+      outcome: 'Поражение. Уничтожены войска двух армий, стратегическая инициатива перешла к немецкому командованию.',
+      tasks: [
+        { q:'В каком месяце 1942 года произошла Харьковская операция?', answer:'май|мае' },
+        { q:'Назовите фамилию командующего Юго-Западным фронтом.', answer:'тимошенко|с.к. тимошенко' },
+        { q:'Назовите фамилию командующего Южным фронтом.', answer:'малиновский|р.я. малиновский' },
+        { q:'Сколько армий потеряли советские войска под Харьковом? (Введите число)', answer:'2|две|двух' },
+        { q:'К какому городу открылся путь после поражения под Харьковом?', answer:'сталинград|к сталинграду' },
+        { q:'К какому региону открылся путь после поражения под Харьковом?', answer:'кавказ|к кавказу' },
+        { q:'К кому перешла стратегическая инициатива после Харьковской операции?', answer:'немцам|немецкому командованию|вермахту' },
+        { q:'В каком году произошла Харьковская операция?', answer:'1942' }
+      ]
+    },
+    {
+      year: 1942,
+      index: '08',
+      title: 'Ржевско-Вяземская операция («Ржевская мясорубка»)',
+      date: '8 января – 20 апреля 1942',
+      img: 'images/H.png',
+      imgCaption: 'Ржевско-Вяземская операция, 1942 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'В.Д. Соколовский, М.А. Пуркаев, И.С. Конев (Калининский фронт)',
+      course: [
+        'В ходе зимнего контрнаступления 1941–1942 годов советские войска стремились разгромить группу армий «Центр» и освободить Ржев и Вязьму — важные узлы обороны противника.',
+        'Бои приняли затяжной и крайне кровопролитный характер. Ржевско-Вяземский выступ стал ареной ожесточённых сражений, продолжавшихся с перерывами более года. Особенно тяжёлыми были бои за Ржев, который немцы превратили в мощный укрепрайон.',
+        'Несмотря на огромные потери, полностью выполнить задачу не удалось — противник был вынужден перейти к обороне, но сохранил за собой Ржев и Вязьму до весны 1943 года.',
+        'Ржевская битва стала символом ожесточённых и безуспешных атак Красной Армии. Потери с обеих сторон были колоссальными. Лишь в марте 1943 года, после ликвидации блокады Ленинграда и успехов под Сталинградом, Ржев и Вязьма были освобождены.'
+      ],
+      outcome: 'Освобождение городов Ржев и Вязьма (март 1943 года). Огромные потери с обеих сторон.',
+      tasks: [
+        { q:'Какое неофициальное название получила Ржевско-Вяземская операция?', answer:'ржевская мясорубка' },
+        { q:'Назовите фамилию одного из командующих операцией.', answer:'соколовский|в.д. соколовский' },
+        { q:'Назовите один из городов, освобождённых в ходе операции.', answer:'ржев' },
+        { q:'Назовите второй город, освобождённый в ходе операции.', answer:'вязьма|вязьму' },
+        { q:'В каком году произошла Ржевско-Вяземская операция?', answer:'1942' },
+        { q:'В каком месяце 1942 года произошла операция?', answer:'март|марте' },
+        { q:'Назовите группу армий, которой противостояли советские войска.', answer:'центр' },
+        { q:'Назовите фамилию второго командующего операцией.', answer:'пуркаев|м.а. пуркаев' }
+      ]
+    },
+    {
+      year: 1942,
+      index: '09',
+      title: 'Сталинградская битва (операции «Уран» и «Кольцо»)',
+      date: '17 июля 1942 – 2 февраля 1943',
+      img: 'images/I.jpeg',
+      imgCaption: 'Сталинградская битва. Карта боевых действий 1942–1943 гг.',
+      commandersLabel: 'Командующие и участники',
+      commanders: 'К.К. Рокоссовский (Донской фронт), Н.Ф. Ватутин (Юго-Западный фронт), А.И. Ерёменко (Сталинградский фронт), В.И. Чуйков (62-я армия), М.С. Шумилов (64-я армия), Я.Ф. Павлов (сержант, оборона «дома Павлова»), Р.Я. Малиновский',
+      course: [
+        'Летом 1942 года немецкие войска вышли к Сталинграду, стремясь захватить город, перерезать Волгу и лишить СССР важнейшей транспортной артерии. Началась одна из крупнейших битв в истории человечества.',
+        'В городе развернулись упорные уличные бои. Особенно прославился «дом Павлова» — четырёхэтажный жилой дом, который группа сержанта Я.Ф. Павлова обороняла 58 дней, превратив в неприступную крепость. Бои шли за каждый этаж, каждую лестницу.',
+        '19 ноября 1942 года Красная Армия перешла в контрнаступление (операция «Уран»). Удары были нанесены по флангам немецкой группировки, которые прикрывали румынские войска. 23 ноября в районе Калача замкнулось кольцо окружения — в «котле» оказалась 330-тысячная группировка врага во главе с фельдмаршалом Паулюсом.',
+        'В январе–феврале 1943 года в ходе операции «Кольцо» окружённые войска были разгромлены. 2 февраля 1943 года остатки группировки капитулировали, фельдмаршал Паулюс был взят в плен.',
+        'Победа под Сталинградом стала началом коренного перелома в Великой Отечественной войне. Миф о непобедимости вермахта был окончательно разрушен.'
+      ],
+      outcome: 'Начало коренного перелома в войне. Складывание антигитлеровской коалиции.',
+      tasks: [
+        { q:'Назовите кодовое название операции по окружению немцев под Сталинградом.', answer:'уран' },
+        { q:'Назовите кодовое название операции по ликвидации окружённой группировки.', answer:'кольцо' },
+        { q:'Назовите дату начала контрнаступления под Сталинградом.', answer:'19 ноября 1942|19 ноября' },
+        { q:'Назовите фамилию фельдмаршала, взятого в плен под Сталинградом.', answer:'паулюс|паулюса' },
+        { q:'Назовите фамилию командующего 62-й армией.', answer:'чуйков|в.и. чуйков' },
+        { q:'Назовите фамилию командующего Донским фронтом.', answer:'рокоссовский|к.к. рокоссовский' },
+        { q:'Назовите реку, к которой вышли немецкие войска под Сталинградом.', answer:'волга|волгу' },
+        { q:'В каком году завершилась Сталинградская битва?', answer:'1943' }
+      ]
+    },
+
+    /* ============ 1943 ============ */
+    {
+      year: 1943,
+      index: '10',
+      title: 'Битва за Кавказ',
+      date: '25 июля 1942 – 9 октября 1943',
+      img: 'images/J.webp',
+      imgCaption: 'Битва за Кавказ, 1942–1943 гг.',
+      commandersLabel: 'Командующие',
+      commanders: 'С.М. Будённый (Северо-Кавказский фронт), И.В. Тюленев (Закавказский фронт), И.Е. Петров, Р.Я. Малиновский',
+      course: [
+        'Летом 1942 года немецкие войска начали наступление на Кавказ, стремясь захватить нефтяные промыслы Грозного и Баку — главный источник топлива для СССР.',
+        'Советские войска вели тяжёлые оборонительные бои, остановив врага у Орджоникидзе (Владикавказа) и на перевалах Главного Кавказского хребта. Немецкие горные стрелки пытались прорваться через перевалы, но были остановлены.',
+        'В январе 1943 года началось контрнаступление, в результате которого были освобождены значительные территории Кавказа и Ростовская область. Угроза потери нефтяных районов была ликвидирована.',
+        'Битва за Кавказ завершилась 9 октября 1943 года полным освобождением региона. Это была одна из крупнейших операций, обеспечивших коренной перелом на южном направлении.'
+      ],
+      outcome: 'Освобождение Кавказа и Ростовской области. Ликвидация угрозы потери нефтяных районов.',
+      tasks: [
+        { q:'Что было главной целью немецкого наступления на Кавказ?', answer:'нефть|нефтяные' },
+        { q:'У какого города был остановлен враг на Кавказе?', answer:'орджоникидзе|владикавказ' },
+        { q:'Назовите хребет, на перевалах которого шли бои.', answer:'главный кавказский' },
+        { q:'В каком году началась битва за Кавказ?', answer:'1942' },
+        { q:'В каком году завершилась битва за Кавказ?', answer:'1943' },
+        { q:'Назовите область, освобождённую в ходе контрнаступления.', answer:'ростовская|ростов' },
+        { q:'Назовите город (нефтяной центр), который стремились захватить немцы.', answer:'баку|грозный' },
+        { q:'В каком месяце 1943 года началось контрнаступление на Кавказе?', answer:'январь|январе' }
+      ]
+    },
+    {
+      year: 1943,
+      index: '11',
+      title: 'Операция «Искра»',
+      date: '12–30 января 1943',
+      img: 'images/K.webp',
+      imgCaption: 'Операция «Искра». Прорыв блокады Ленинграда, январь 1943 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'Л.А. Говоров (Ленинградский фронт), К.А. Мерецков (Волховский фронт)',
+      course: [
+        'Целью операции было прорвать блокаду Ленинграда и восстановить сухопутную связь города со страной. Войска Ленинградского и Волховского фронтов нанесли встречные удары южнее Ладожского озера.',
+        'Несмотря на тяжёлые бои и большие потери, 18 января 1943 года кольцо блокады было прорвано. Был создан коридор шириной 8–11 км, что позволило наладить железнодорожное сообщение с городом.',
+        'По узкой полосе земли за 17 дней была проложена железная дорога, по которой в Ленинград пошли поезда с продовольствием и боеприпасами. Это стало первым крупным успехом под Ленинградом и значительно улучшило положение осаждённого города.',
+        'Полное освобождение Ленинграда произошло через год — 27 января 1944 года.'
+      ],
+      outcome: 'Прорыв блокады Ленинграда 18 января 1943 года. Создание коридора шириной 8–11 км.',
+      tasks: [
+        { q:'Назовите кодовое название операции по прорыву блокады Ленинграда.', answer:'искра' },
+        { q:'Назовите дату прорыва блокады Ленинграда.', answer:'18 января 1943|18 января' },
+        { q:'Назовите фамилию командующего Ленинградским фронтом.', answer:'говоров|л.а. говоров' },
+        { q:'Назовите фамилию командующего Волховским фронтом.', answer:'мерецков|к.а. мерецков' },
+        { q:'Какова была ширина созданного коридора (в км)?', answer:'8-11|8-11 км' },
+        { q:'Южнее какого озера наносились удары?', answer:'ладожское|ладожского' },
+        { q:'В каком году была проведена операция «Искра»?', answer:'1943' },
+        { q:'В каком месяце 1943 года была проведена операция?', answer:'январь|январе' }
+      ]
+    },
+    {
+      year: 1943,
+      index: '12',
+      title: 'Курская битва («Цитадель»). Сражение под Прохоровкой',
+      date: '5 июля – 23 августа 1943',
+      img: 'images/L.webp',
+      imgCaption: 'Курская битва. Карта боевых действий, июль–август 1943 г.',
+      commandersLabel: 'Командующие и участники',
+      commanders: 'К.К. Рокоссовский (Центральный фронт), Н.Ф. Ватутин (Воронежский фронт), П.А. Ротмистров, И.С. Конев (Степной фронт), И.Н. Кожедуб',
+      course: [
+        'Немецкое командование планировало операцию «Цитадель» — наступление на Курском выступе с целью окружить и уничтожить крупные силы советских войск, вернув стратегическую инициативу.',
+        'Советская разведка своевременно вскрыла планы врага. Оборона была подготовлена заранее: создана глубоко эшелонированная система укреплений, минных полей, противотанковых районов.',
+        '5 июля 1943 года немцы перешли в наступление, но завязли в обороне. 12 июля под Прохоровкой произошло крупнейшее танковое сражение в истории: с обеих сторон участвовало около 1200 танков и самоходных орудий. Немцы не смогли прорвать оборону.',
+        'В тот же день началось контрнаступление советских войск (операции «Кутузов» и «Полководец Румянцев»). Орёл был освобождён 5 августа, Белгород — в тот же день (в честь этого в Москве был дан первый артиллерийский салют), Харьков — 23 августа.',
+        'Курская битва завершила коренной перелом в Великой Отечественной войне. Стратегическая инициатива окончательно перешла к Красной Армии.'
+      ],
+      outcome: 'Освобождение Орла, Харькова и Белгорода. Первый артиллерийский салют с начала войны. Завершение коренного перелома.',
+      tasks: [
+        { q:'Назовите кодовое название немецкой операции на Курской дуге.', answer:'цитадель' },
+        { q:'Под каким населённым пунктом произошло крупнейшее танковое сражение?', answer:'прохоровка|прохоровкой' },
+        { q:'Назовите дату сражения под Прохоровкой.', answer:'12 июля 1943|12 июля' },
+        { q:'Назовите кодовое название операции по освобождению Орла.', answer:'кутузов' },
+        { q:'Назовите кодовое название операции по освобождению Белгорода и Харькова.', answer:'полководец румянцев|румянцев' },
+        { q:'Назовите фамилию командующего Центральным фронтом.', answer:'рокоссовский|к.к. рокоссовский' },
+        { q:'Назовите фамилию командующего Воронежским фронтом.', answer:'ватутин|н.ф. ватутин' },
+        { q:'В каком году произошла Курская битва?', answer:'1943' }
+      ]
+    },
+    {
+      year: 1943,
+      index: '13',
+      title: 'Битва за Днепр',
+      date: '26 августа – 23 декабря 1943',
+      img: 'images/M.jpg',
+      imgCaption: 'Битва за Днепр, август–декабрь 1943 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'Г.К. Жуков, А.М. Василевский, Н.Ф. Ватутин (1-й Украинский фронт), К.К. Рокоссовский (1-й Белорусский фронт)',
+      course: [
+        'После Курской битвы Красная Армия устремилась к Днепру. Немецкое командование создало мощный оборонительный рубеж — «Восточный вал», который должен был остановить советское наступление.',
+        'Советские войска с ходу форсировали Днепр на многих участках, захватывая плацдармы на правом берегу. Операция готовилась в кратчайшие сроки, и переправа через широкую реку стала массовым подвигом солдат.',
+        'Особенно ожесточённые бои шли за Киев, который был освобождён 6 ноября 1943 года. Форсирование Днепра стало одним из самых массовых проявлений героизма в войне — за эту операцию звание Героя Советского Союза получили более 2400 человек.',
+        'Битва за Днепр завершила коренной перелом в войне и создала условия для освобождения Правобережной Украины, Крыма и выхода к границам СССР.'
+      ],
+      outcome: 'Форсирование Днепра, освобождение Киева. Завершение коренного перелома в войне.',
+      tasks: [
+        { q:'Как назывался немецкий оборонительный рубеж на Днепре?', answer:'восточный вал' },
+        { q:'Какой город был освобождён в ноябре 1943 года?', answer:'киев|киева' },
+        { q:'Назовите фамилию одного из командующих в битве за Днепр.', answer:'жуков|г.к. жуков' },
+        { q:'Назовите фамилию второго командующего в битве за Днепр.', answer:'василевский|а.м. василевский' },
+        { q:'Назовите реку, форсированную советскими войсками.', answer:'днепр|днепра' },
+        { q:'В каком месяце 1943 года был освобождён Киев?', answer:'ноябрь|ноябре' },
+        { q:'В каком году произошла битва за Днепр?', answer:'1943' },
+        { q:'Что завершила битва за Днепр?', answer:'коренной перелом' }
+      ]
+    },
+
+    /* ============ 1944 ============ */
+    {
+      year: 1944,
+      index: '14',
+      title: 'Ленинградско-Новгородская операция',
+      date: '14 января – 1 марта 1944',
+      img: 'images/N.webp',
+      imgCaption: 'Ленинградско-Новгородская операция, январь 1944 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'Л.А. Говоров (Ленинградский фронт), К.А. Мерецков (Волховский фронт), М.М. Попов (2-й Прибалтийский фронт)',
+      course: [
+        'В январе 1944 года советские войска начали наступление под Ленинградом и Новгородом. В ходе упорных боёв немецкая группа армий «Север» была разгромлена и отброшена от города на 60–100 км.',
+        '27 января 1944 года блокада Ленинграда была полностью снята. Город впервые за 872 дня почувствовал свободу. В честь этого события в Ленинграде был дан артиллерийский салют.',
+        'Операция позволила освободить значительную часть Ленинградской области и создала условия для освобождения Прибалтики. Немецкие войска были отброшены к Нарве и Пскову.'
+      ],
+      outcome: 'Полное снятие блокады Ленинграда 27 января 1944 года. Освобождение Ленинградской области.',
+      tasks: [
+        { q:'Назовите дату полного снятия блокады Ленинграда.', answer:'27 января 1944|27 января' },
+        { q:'Назовите фамилию командующего Ленинградским фронтом.', answer:'говоров|л.а. говоров' },
+        { q:'Назовите фамилию командующего Волховским фронтом.', answer:'мерецков|к.а. мерецков' },
+        { q:'Назовите фамилию командующего 2-м Прибалтийским фронтом.', answer:'попов|м.м. попов' },
+        { q:'Назовите немецкую группу армий, разгромленную в ходе операции.', answer:'север' },
+        { q:'В каком году была проведена операция?', answer:'1944' },
+        { q:'В каком месяце 1944 года была проведена операция?', answer:'январь|январе' },
+        { q:'Сколько дней длилась блокада Ленинграда? (Введите число)', answer:'872' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '15',
+      title: 'Днепровско-Карпатская и Корсунь-Шевченковская операции',
+      date: '24 декабря 1943 – 17 апреля 1944',
+      img: 'images/O.jpg',
+      imgCaption: 'Днепровско-Карпатская операция, 1943–1944 гг.',
+      commandersLabel: 'Командующие',
+      commanders: 'Н.Ф. Ватутин (1-й Украинский фронт), И.С. Конев (2-й Украинский фронт)',
+      course: [
+        'Советские войска продолжали освобождение Правобережной Украины. В январе–феврале 1944 года в районе Корсуни были окружены и разгромлены крупные силы врага — «Корсунь-Шевченковский котёл».',
+        'В марте началось наступление, в ходе которого советские войска вышли к Карпатам. Были освобождены Винница, Житомир, Ровно и другие города. Противник понёс тяжёлые потери.',
+        'В ходе операции погиб командующий 1-м Украинским фронтом генерал армии Н.Ф. Ватутин — он был смертельно ранен бандеровцами 29 февраля 1944 года. Его именем назван ряд городов и улиц.',
+        'Освобождение Правобережной Украины стало крупным успехом Красной Армии и создало условия для дальнейшего наступления на Балканы.'
+      ],
+      outcome: 'Освобождение Правобережной Украины. Выход к Карпатам.',
+      tasks: [
+        { q:'Какая часть Украины была освобождена в ходе операции?', answer:'правобережной|правобережная украина' },
+        { q:'Назовите операцию, проведённую в районе Корсуни.', answer:'корсунь-шевченковская|корсунь' },
+        { q:'Назовите фамилию одного из командующих операцией.', answer:'ватутин|н.ф. ватутин' },
+        { q:'Назовите фамилию второго командующего операцией.', answer:'конев|и.с. конев' },
+        { q:'К каким горам вышли советские войска в ходе наступления?', answer:'карпаты|карпатам' },
+        { q:'В каком месяце 1944 года произошла Корсунь-Шевченковская операция?', answer:'январь|январе' },
+        { q:'В каком месяце 1944 года завершилась операция?', answer:'апрель|апреле' },
+        { q:'Назовите один из городов, освобождённых в ходе операции.', answer:'винница|житомир|ровно' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '16',
+      title: 'Одесская и Крымская операции',
+      date: '26 марта – 12 мая 1944',
+      img: 'images/P.webp',
+      imgCaption: 'Крымская наступательная операция, 1944 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'Ф.И. Толбухин (3-й Украинский фронт), А.И. Ерёменко (Отдельная Приморская армия), Ф.С. Октябрьский (Черноморский флот), Р.Я. Малиновский (2-й Украинский фронт)',
+      course: [
+        'В марте 1944 года советские войска начали наступление на юге Украины. Одесса была освобождена 10 апреля 1944 года.',
+        'В апреле–мае развернулась Крымская операция. Немецкие войска, блокированные в Крыму, оказывали упорное сопротивление, но были разгромлены.',
+        '9 мая 1944 года был освобождён Севастополь — город, который держался 250 дней в 1941–1942 годах. Крым полностью вернулся под контроль СССР.',
+        'Освобождение Крыма и Одессы стало важным этапом на пути к полному изгнанию врага с территории СССР.'
+      ],
+      outcome: 'Освобождение Одессы и Крыма. 9 мая 1944 года — освобождение Севастополя.',
+      tasks: [
+        { q:'Назовите дату освобождения Одессы.', answer:'10 апреля 1944|10 апреля' },
+        { q:'Назовите дату освобождения Севастополя.', answer:'9 мая 1944|9 мая' },
+        { q:'Назовите фамилию одного из командующих операцией.', answer:'толбухин|ф.и. толбухин' },
+        { q:'Назовите фамилию второго командующего операцией.', answer:'малиновский|р.я. малиновский' },
+        { q:'Назовите флот, участвовавший в операции.', answer:'черноморский' },
+        { q:'Назовите фамилию командующего Черноморским флотом.', answer:'октябрьский|ф.с. октябрьский' },
+        { q:'Какой полуостров был полностью освобождён?', answer:'крым|крыма' },
+        { q:'В каком году были проведены операции?', answer:'1944' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '17',
+      title: 'Выборгско-Петрозаводская операция',
+      date: '10 июня – 9 августа 1944',
+      img: 'images/Q.webp',
+      imgCaption: 'Выборгско-Петрозаводская операция, 1944 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'Л.А. Говоров (Ленинградский фронт), К.А. Мерецков (Карельский фронт)',
+      course: [
+        'Целью операции было вывести Финляндию из войны. Советские войска нанесли удары на Карельском перешейке и в Южной Карелии.',
+        'Были освобождены Выборг (20 июня) и Петрозаводск (28 июня). Финское правительство, осознав безнадёжность сопротивления, пошло на переговоры.',
+        'В сентябре 1944 года было подписано перемирие между Финляндией, СССР и Великобританией. Финляндия вышла из войны и обязалась изгнать немецкие войска со своей территории.'
+      ],
+      outcome: 'Подписание перемирия между Финляндией, СССР и Великобританией. Вывод Финляндии из войны.',
+      tasks: [
+        { q:'Какую страну стремились вывести из войны в ходе операции?', answer:'финляндию|финляндия' },
+        { q:'Назовите город, освобождённый в ходе операции.', answer:'выборг' },
+        { q:'Назовите второй город, освобождённый в ходе операции.', answer:'петрозаводск' },
+        { q:'Назовите фамилию командующего Ленинградским фронтом.', answer:'говоров|л.а. говоров' },
+        { q:'Назовите фамилию командующего Карельским фронтом.', answer:'мерецков|к.а. мерецков' },
+        { q:'Что было подписано в сентябре 1944 года?', answer:'перемирие' },
+        { q:'Назовите перешеек, на котором наносился удар.', answer:'карельский перешеек' },
+        { q:'В каком году была проведена операция?', answer:'1944' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '18',
+      title: 'Белорусская операция («Багратион»)',
+      date: '23 июня – 29 августа 1944',
+      img: 'images/R.jpeg',
+      imgCaption: 'Белорусская наступательная операция «Багратион», 1944 г.',
+      commandersLabel: 'Командующие и участники',
+      commanders: 'И.Х. Баграмян (1-й Прибалтийский фронт, разработчик плана), К.К. Рокоссовский (1-й Белорусский фронт), И.Д. Черняховский (3-й Белорусский фронт), Г.Ф. Захаров (2-й Белорусский фронт), Г.К. Жуков',
+      course: [
+        'Одна из крупнейших наступательных операций в истории человечества. Советские войска нанесли удары по группе армий «Центр» на территории Белоруссии.',
+        'Были освобождены Витебск, Орша, Могилёв, Минск (3 июля 1944 года). В «Минском котле» оказались окружены крупные силы врага — более 100 тысяч человек.',
+        'Наступление продолжилось в Литве и Польше, советские войска вышли на довоенную границу СССР. Операция «Багратион» стала триумфом советского военного искусства — впервые был применён метод параллельного преследования противника.',
+        'Немецкая группа армий «Центр» была полностью разгромлена — это крупнейшее поражение вермахта за всю войну. Красная Армия вплотную подошла к Берлину.'
+      ],
+      outcome: 'Освобождение Минска, Львова, большей части Польши. Выход на довоенную границу СССР. Разгром группы армий «Центр».',
+      tasks: [
+        { q:'Назовите кодовое название Белорусской операции.', answer:'багратион' },
+        { q:'Назовите дату освобождения Минска.', answer:'3 июля 1944|3 июля' },
+        { q:'Назовите фамилию разработчика плана операции.', answer:'баграмян|и.х. баграмян' },
+        { q:'Назовите фамилию командующего 1-м Белорусским фронтом.', answer:'рокоссовский|к.к. рокоссовский' },
+        { q:'Назовите фамилию командующего 3-м Белорусским фронтом.', answer:'черняховский|и.д. черняховский' },
+        { q:'Назовите немецкую группу армий, разгромленную в ходе операции.', answer:'центр' },
+        { q:'В каком «котле» оказались окружены крупные силы врага?', answer:'минский|минск' },
+        { q:'В каком году была проведена операция «Багратион»?', answer:'1944' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '19',
+      title: 'Львовско-Сандомирская операция',
+      date: '13 июля – 29 августа 1944',
+      img: 'images/S.jpg',
+      imgCaption: 'Львовско-Сандомирская операция, 1944 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'И.С. Конев (1-й Украинский фронт), И.Е. Петров (4-й Украинский фронт)',
+      course: [
+        'Советские войска 1-го Украинского фронта нанесли удар в Западной Украине. Были освобождены Львов (27 июля), Перемышль и другие города.',
+        'Форсировав Вислу, советские войска захватили Сандомирский плацдарм, который стал важным рубежом для дальнейшего наступления на Берлин.',
+        'Противник понёс серьёзные потери. Операция создала условия для освобождения Польши и Чехословакии.'
+      ],
+      outcome: 'Освобождение Западной Украины. Захват Сандомирского плацдарма.',
+      tasks: [
+        { q:'Какой плацдарм был захвачен советскими войсками?', answer:'сандомирский' },
+        { q:'Назовите город, освобождённый в ходе операции.', answer:'львов' },
+        { q:'Назовите фамилию командующего 1-м Украинским фронтом.', answer:'конев|и.с. конев' },
+        { q:'Назовите реку, форсированную советскими войсками.', answer:'висла|вислу' },
+        { q:'Назовите фамилию командующего 4-м Украинским фронтом.', answer:'петров|и.е. петров' },
+        { q:'Какая часть Украины была освобождена?', answer:'западной украины|западная украина' },
+        { q:'В каком месяце 1944 года началась операция?', answer:'июль|июле' },
+        { q:'В каком году была проведена операция?', answer:'1944' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '20',
+      title: 'Ясско-Кишинёвская и Румынская операции',
+      date: '20–29 августа 1944',
+      img: 'images/T.webp',
+      imgCaption: 'Ясско-Кишинёвская операция, 1944 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'Р.Я. Малиновский (2-й Украинский фронт), Ф.И. Толбухин (3-й Украинский фронт)',
+      course: [
+        'В августе 1944 года советские войска начали Ясско-Кишинёвскую операцию — одну из самых успешных за всю войну.',
+        'Была окружена и разгромлена крупная немецко-румынская группировка. 24 августа Румыния объявила о выходе из войны и повернула оружие против Германии.',
+        'Советские войска вошли в Болгарию, которая также вышла из войны. Освобождение Молдавии завершилось.',
+        'Операция вошла в историю как «Ясско-Кишинёвский канн» — по аналогии с битвой при Каннах, где Ганнибал окружил римскую армию.'
+      ],
+      outcome: 'Освобождение Молдавской ССР. Румыния и Болгария вышли из войны.',
+      tasks: [
+        { q:'Какая страна объявила о выходе из войны 24 августа 1944 года?', answer:'румыния|румынию' },
+        { q:'В какую страну вошли советские войска после Румынии?', answer:'болгария|болгарию' },
+        { q:'Назовите фамилию командующего 2-м Украинским фронтом.', answer:'малиновский|р.я. малиновский' },
+        { q:'Назовите фамилию командующего 3-м Украинским фронтом.', answer:'толбухин|ф.и. толбухин' },
+        { q:'Назовите город, освобождённый в ходе операции.', answer:'кишинёв|кишинев' },
+        { q:'Какая республика была освобождена в ходе операции?', answer:'молдавия|молдавская сср' },
+        { q:'В каком месяце 1944 года произошла операция?', answer:'август|августе' },
+        { q:'В каком году была проведена операция?', answer:'1944' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '21',
+      title: 'Прибалтийская операция',
+      date: '14 сентября – 24 ноября 1944',
+      img: 'images/U.jpg',
+      imgCaption: 'Прибалтийская операция, 1944 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'А.М. Василевский, Л.А. Говоров (Ленинградский фронт), И.Х. Баграмян (1-й Прибалтийский фронт)',
+      course: [
+        'Советские войска нанесли удары по немецкой группе армий «Север» в Прибалтике. Были освобождены Литва, Эстония и большая часть Латвии.',
+        'Остатки немецких войск (около 30 дивизий) были блокированы в Курляндском котле на западе Латвии. Они капитулировали только в мае 1945 года.',
+        'Финляндия, видя поражение Германии, объявила ей войну. Операция завершила освобождение Прибалтики.'
+      ],
+      outcome: 'Освобождение Литовской, Эстонской и большей части Латвийской ССР. Создание Курляндского котла.',
+      tasks: [
+        { q:'Как назывался «котёл», в котором были блокированы немецкие войска?', answer:'курляндский' },
+        { q:'Назовите немецкую группу армий, разгромленную в ходе операции.', answer:'север' },
+        { q:'Назовите фамилию одного из командующих операцией.', answer:'василевский|а.м. василевский' },
+        { q:'Назовите фамилию второго командующего операцией.', answer:'говоров|л.а. говоров' },
+        { q:'Какая страна была вынуждена объявить войну Германии?', answer:'финляндия|финляндию' },
+        { q:'В каком году была проведена операция?', answer:'1944' },
+        { q:'Назовите одну из республик, освобождённых в ходе операции.', answer:'литва|эстония|латвия' },
+        { q:'В каком месяце 1944 года началась операция?', answer:'сентябрь|сентябре' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '22',
+      title: 'Восточно-Карпатская и Белградская операции',
+      date: '8 сентября – 20 октября 1944',
+      img: 'images/V.jpg',
+      imgCaption: 'Белградская операция, 1944 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'И.Е. Петров (4-й Украинский фронт), Р.Я. Малиновский (2-й Украинский фронт), Ф.И. Толбухин (3-й Украинский фронт)',
+      course: [
+        'Советские войска продвигались в Восточные Карпаты и на Балканы. В ходе Белградской операции совместно с югославскими партизанами был освобождён Белград 20 октября 1944 года.',
+        'Были освобождены Закарпатская Украина и значительная часть Венгрии. Венгрия объявила войну Германии.',
+        'Освобождение Белграда стало важным этапом на пути к полному освобождению Югославии и Балкан.'
+      ],
+      outcome: 'Освобождение Белграда, Венгрии и Закарпатской Украины. Венгрия объявила войну Германии.',
+      tasks: [
+        { q:'Назовите город, освобождённый 20 октября 1944 года.', answer:'белград' },
+        { q:'Назовите дату освобождения Белграда.', answer:'20 октября 1944|20 октября' },
+        { q:'Какая страна объявила войну Германии?', answer:'венгрия|венгрию' },
+        { q:'С кем совместно действовали советские войска при освобождении Белграда?', answer:'югославскими партизанами|партизанами' },
+        { q:'Назовите фамилию одного из командующих операцией.', answer:'малиновский|р.я. малиновский' },
+        { q:'Назовите фамилию второго командующего операцией.', answer:'петров|и.е. петров' },
+        { q:'Какой регион был освобождён в ходе операции?', answer:'закарпатская украина|закарпатье' },
+        { q:'В каком году была проведена операция?', answer:'1944' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '23',
+      title: 'Петсамо-Киркенесская операция',
+      date: '7–29 октября 1944',
+      img: 'images/W.jpg',
+      imgCaption: 'Петсамо-Киркенесская операция, октябрь 1944 г.',
+      commandersLabel: 'Командующий',
+      commanders: 'К.А. Мерецков (Карельский фронт)',
+      course: [
+        'Советские войска Карельского фронта нанесли удар в Заполярье. Были освобождены Печенга (Петсамо) и Киркенес (Норвегия).',
+        'Немецкие войска были выбиты из северных районов. Угроза северным морским путям СССР была ликвидирована.',
+        'Советские войска вступили на территорию Норвегии. Это была одна из немногих операций, в ходе которых Красная Армия вышла за пределы СССР в Европу.'
+      ],
+      outcome: 'Освобождение Печенги и Киркенеса. Советские войска вошли в Норвегию. Ликвидация угрозы северным морским путям.',
+      tasks: [
+        { q:'Назовите город, освобождённый в ходе операции.', answer:'печенга|печенгу' },
+        { q:'В какую страну вошли советские войска?', answer:'норвегия|норвегию' },
+        { q:'Назовите фамилию командующего Карельским фронтом.', answer:'мерецков|к.а. мерецков' },
+        { q:'Назовите город в Норвегии, освобождённый советскими войсками.', answer:'киркенес' },
+        { q:'В каком регионе наносился удар?', answer:'заполярье|заполярье' },
+        { q:'В каком году была проведена операция?', answer:'1944' },
+        { q:'В каком месяце 1944 года была проведена операция?', answer:'октябрь|октябре' },
+        { q:'Угроза чему была ликвидирована в результате операции?', answer:'северным морским путям|северный морской путь' }
+      ]
+    },
+    {
+      year: 1944,
+      index: '24',
+      title: 'Будапештская операция',
+      date: '29 октября 1944 – 13 февраля 1945',
+      img: 'images/X.webp',
+      imgCaption: 'Будапештская операция, 1944–1945 гг.',
+      commandersLabel: 'Командующие',
+      commanders: 'Р.Я. Малиновский (2-й Украинский фронт), Ф.И. Толбухин (3-й Украинский фронт)',
+      course: [
+        'Советские войска начали наступление на Будапешт в октябре 1944 года. Город был окружён в декабре.',
+        'Немецко-венгерская группировка оказывала упорное сопротивление. Бои за Будапешт продолжались до февраля 1945 года — это была одна из самых длительных городских битв войны.',
+        'Город был взят 13 февраля 1945 года, что ускорило освобождение Венгрии и открыло путь на Вену.'
+      ],
+      outcome: 'Освобождение Будапешта 13 февраля 1945 года. Открытие пути на Вену.',
+      tasks: [
+        { q:'Назовите город, освобождённый в ходе операции.', answer:'будапешт' },
+        { q:'В каком месяце 1945 года был освобождён Будапешт?', answer:'февраль|феврале' },
+        { q:'Назовите фамилию командующего 2-м Украинским фронтом.', answer:'малиновский|р.я. малиновский' },
+        { q:'Назовите фамилию командующего 3-м Украинским фронтом.', answer:'толбухин|ф.и. толбухин' },
+        { q:'Какая страна была освобождена в ходе операции?', answer:'венгрия|венгрии' },
+        { q:'На какой город открылся путь после освобождения Будапешта?', answer:'вена|на вену' },
+        { q:'В каком месяце 1944 года началась операция?', answer:'октябрь|октябре' },
+        { q:'В каком году завершилась операция?', answer:'1945' }
+      ]
+    },
+
+    /* ============ 1945 ============ */
+    {
+      year: 1945,
+      index: '25',
+      title: 'Висло-Одерская операция',
+      date: '12 января – 3 февраля 1945',
+      img: 'images/Y.jpg',
+      imgCaption: 'Висло-Одерская операция, 1945 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'Г.К. Жуков (1-й Белорусский фронт), И.С. Конев (1-й Украинский фронт)',
+      course: [
+        'Советские войска начали наступление от Вислы к Одеру. Были освобождены Варшава (17 января 1945 года), Краков, Познань.',
+        'Советские войска вышли к Одеру, создав плацдармы для удара по Берлину. Наступление было стремительным — за 20 дней войска прошли 500 км.',
+        'Висло-Одерская операция стала одной из самых успешных наступательных операций войны. Была освобождена большая часть Польши.'
+      ],
+      outcome: 'Освобождение Варшавы и большей части Польши. Выход к Одеру, создание плацдармов для удара по Берлину.',
+      tasks: [
+        { q:'Назовите дату освобождения Варшавы.', answer:'17 января 1945|17 января' },
+        { q:'Назовите фамилию командующего 1-м Белорусским фронтом.', answer:'жуков|г.к. жуков' },
+        { q:'Назовите фамилию командующего 1-м Украинским фронтом.', answer:'конев|и.с. конев' },
+        { q:'К какой реке вышли советские войска?', answer:'одер|одеру' },
+        { q:'От какой реки началось наступление?', answer:'висла|вислы' },
+        { q:'Назовите столицу Польши, освобождённую в ходе операции.', answer:'варшава|варшаву' },
+        { q:'В каком месяце 1945 года началась операция?', answer:'январь|январе' },
+        { q:'Назовите один из городов, освобождённых в ходе операции (кроме Варшавы).', answer:'краков|познань' }
+      ]
+    },
+    {
+      year: 1945,
+      index: '26',
+      title: 'Восточно-Померанская операция',
+      date: '10 февраля – 4 апреля 1945',
+      img: 'images/Z.webp',
+      imgCaption: 'Восточно-Померанская операция, 1945 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'К.К. Рокоссовский (2-й Белорусский фронт), Г.К. Жуков (1-й Белорусский фронт)',
+      course: [
+        'Советские войска нанесли удар в Восточной Померании. Были освобождены Данциг (Гданьск) и Гдыня.',
+        'Противник был отброшен за Одер. Операция обеспечила безопасность флангов советских войск, наступавших на Берлин.',
+        'Это была важная подготовительная операция перед решающим штурмом Берлина.'
+      ],
+      outcome: 'Освобождение Данцига и Гдыни. Форсирование Одера. Обеспечение флангов для Берлинской операции.',
+      tasks: [
+        { q:'Назовите город, освобождённый в ходе операции (немецкое название).', answer:'данциг|гданьск' },
+        { q:'Назовите второй город, освобождённый в ходе операции.', answer:'гдыня|гдыни' },
+        { q:'Назовите фамилию командующего 2-м Белорусским фронтом.', answer:'рокоссовский|к.к. рокоссовский' },
+        { q:'За какую реку был отброшен противник?', answer:'одер|одеру' },
+        { q:'Назовите фамилию командующего 1-м Белорусским фронтом.', answer:'жуков|г.к. жуков' },
+        { q:'В каком году была проведена операция?', answer:'1945' },
+        { q:'В каком месяце 1945 года началась операция?', answer:'февраль|феврале' },
+        { q:'Безопасность флангов для какого наступления обеспечила операция?', answer:'берлин|на берлин' }
+      ]
+    },
+    {
+      year: 1945,
+      index: '27',
+      title: 'Восточно-Прусская операция',
+      date: '13 января – 25 апреля 1945',
+      img: 'images/ZAQ.gif',
+      imgCaption: 'Восточно-Прусская операция, 1945 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'К.К. Рокоссовский (2-й Белорусский фронт), И.Д. Черняховский (3-й Белорусский фронт), А.М. Василевский',
+      course: [
+        'Советские войска начали наступление в Восточной Пруссии. Бои носили крайне ожесточённый характер — немцы обороняли исконно немецкую территорию.',
+        '9 апреля 1945 года был взят Кёнигсберг — мощная крепость, которую немцы считали неприступной. Остатки немецких войск капитулировали 25 апреля.',
+        'Восточно-Прусская группировка врага была полностью разгромлена. В ходе боёв погиб командующий 3-м Белорусским фронтом генерал армии И.Д. Черняховский.'
+      ],
+      outcome: 'Освобождение Кенигсберга (9 апреля 1945 года). Разгром восточно-прусской группировки.',
+      tasks: [
+        { q:'Назовите дату взятия Кёнигсберга.', answer:'9 апреля 1945|9 апреля' },
+        { q:'Назовите город, взятый советскими войсками.', answer:'кёнигсберг|кенигсберг' },
+        { q:'Назовите фамилию командующего 3-м Белорусским фронтом.', answer:'черняховский|и.д. черняховский' },
+        { q:'Назовите фамилию командующего, принявшего руководство после гибели Черняховского.', answer:'василевский|а.м. василевский' },
+        { q:'Назовите фамилию командующего 2-м Белорусским фронтом.', answer:'рокоссовский|к.к. рокоссовский' },
+        { q:'Назовите регион, в котором проводилась операция.', answer:'восточная пруссия|восточной пруссии' },
+        { q:'В каком месяце 1945 года началась операция?', answer:'январь|январе' },
+        { q:'В каком году была проведена операция?', answer:'1945' }
+      ]
+    },
+    {
+      year: 1945,
+      index: '28',
+      title: 'Венская операция',
+      date: '16 марта – 15 апреля 1945',
+      img: 'images/ZED.jpg',
+      imgCaption: 'Венская операция, 1945 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'Ф.И. Толбухин (3-й Украинский фронт), Р.Я. Малиновский (2-й Украинский фронт)',
+      course: [
+        'Советские войска наступали на Вену. Немецкое командование стремилось превратить город в неприступную крепость.',
+        'Однако советские войска обошли город с флангов и 13 апреля 1945 года освободили Вену. Австрия была освобождена от немецкой оккупации.',
+        'В ходе операции советские войска разгромили крупную группировку врага и создали условия для дальнейшего наступления в Чехословакию.'
+      ],
+      outcome: 'Освобождение Вены 13 апреля 1945 года. Освобождение Австрии от немецкой оккупации.',
+      tasks: [
+        { q:'Назовите дату освобождения Вены.', answer:'13 апреля 1945|13 апреля' },
+        { q:'Назовите город, освобождённый в ходе операции.', answer:'вена|вену' },
+        { q:'Какая страна была освобождена от немецкой оккупации?', answer:'австрия|австрию' },
+        { q:'Назовите фамилию командующего 3-м Украинским фронтом.', answer:'толбухин|ф.и. толбухин' },
+        { q:'Назовите фамилию командующего 2-м Украинским фронтом.', answer:'малиновский|р.я. малиновский' },
+        { q:'В каком месяце 1945 года началась операция?', answer:'март|марте' },
+        { q:'В каком году была проведена операция?', answer:'1945' },
+        { q:'Как советские войска взяли Вену?', answer:'флангов|с флангов|обход' }
+      ]
+    },
+    {
+      year: 1945,
+      index: '29',
+      title: 'Берлинская операция',
+      date: '16 апреля – 8 мая 1945',
+      img: 'images/ZZX.webp',
+      imgCaption: 'Берлинская стратегическая наступательная операция, 1945 г.',
+      commandersLabel: 'Командующие и участники',
+      commanders: 'Г.К. Жуков (1-й Белорусский фронт), И.С. Конев (1-й Украинский фронт), К.К. Рокоссовский (2-й Белорусский фронт), М.А. Егоров, М.В. Кантария (сержанты, водрузившие Знамя Победы)',
+      course: [
+        'Заключительная операция Великой Отечественной войны. Советские войска 1-го и 2-го Белорусских и 1-го Украинского фронтов начали штурм Берлина 16 апреля 1945 года.',
+        'Город был превращён в мощный укрепрайон. Бои шли за каждую улицу, каждый дом. 30 апреля 1945 года сержанты М.А. Егоров и М.В. Кантария водрузили Знамя Победы над рейхстагом.',
+        '2 мая 1945 года Берлин капитулировал. 8 мая 1945 года был подписан Акт о безоговорочной капитуляции Германии. 9 мая стало Днём Победы.',
+        'Берлинская операция стала триумфом советского военного искусства и завершила Великую Отечественную войну.'
+      ],
+      outcome: 'Взятие Берлина. Подписание Акта о безоговорочной капитуляции Германии 8 мая 1945 года. Окончание войны в Европе.',
+      tasks: [
+        { q:'Назовите дату начала Берлинской операции.', answer:'16 апреля 1945|16 апреля' },
+        { q:'Назовите фамилию одного из сержантов, водрузивших Знамя Победы над рейхстагом.', answer:'егоров|м.а. егоров' },
+        { q:'Назовите фамилию второго сержанта, водрузившего Знамя Победы.', answer:'кантария|м.в. кантария' },
+        { q:'Назовите дату водружения Знамени Победы над рейхстагом.', answer:'30 апреля 1945|30 апреля' },
+        { q:'Назовите дату капитуляции Берлина.', answer:'2 мая 1945|2 мая' },
+        { q:'Назовите дату подписания Акта о безоговорочной капитуляции Германии.', answer:'8 мая 1945|8 мая' },
+        { q:'Назовите фамилию командующего 1-м Белорусским фронтом.', answer:'жуков|г.к. жуков' },
+        { q:'Над каким зданием было водружено Знамя Победы?', answer:'рейхстаг|над рейхстагом' }
+      ]
+    }
+  ];
+
+  /* ================================================================
+     РЕНДЕР
+     ================================================================ */
+  const root = document.getElementById('battles-root');
+  const yearTitles = {
+    1941: '1941 год',
+    1942: '1942 год',
+    1943: '1943 год',
+    1944: '1944 год · Десять «сталинских ударов»',
+    1945: '1945 год'
+  };
+
+  // Группируем по годам
+  const byYear = {};
+  BATTLES.forEach(function(b){
+    if(!byYear[b.year]) byYear[b.year] = [];
+    byYear[b.year].push(b);
+  });
+
+  Object.keys(byYear).sort().forEach(function(year){
+    const section = document.createElement('section');
+    section.className = 'year-section';
+
+    const h2 = document.createElement('h2');
+    h2.className = 'year-title';
+    h2.innerHTML = yearTitles[year] + ' <span class="year-line"></span>';
+    section.appendChild(h2);
+
+    byYear[year].forEach(function(b){
+      const item = document.createElement('div');
+      item.className = 'battle-item';
+
+      // Заголовок
+      const header = document.createElement('div');
+      header.className = 'battle-header';
+      header.innerHTML =
+        '<span class="battle-index">' + b.index + '</span>' +
+        '<div class="battle-title-wrap">' +
+          '<h3>' + b.title + '</h3>' +
+          '<span class="date-badge">' + b.date + '</span>' +
+        '</div>' +
+        '<span class="arrow">▼</span>';
+      item.appendChild(header);
+
+      // Содержимое
+      const details = document.createElement('div');
+      details.className = 'battle-details';
+      const inner = document.createElement('div');
+      inner.className = 'battle-details-inner';
+      const scroll = document.createElement('div');
+      scroll.className = 'scroll-content';
+
+      // Командующие
+      scroll.insertAdjacentHTML('beforeend',
+        '<div class="detail-section commanders">' +
+          '<div class="section-label"><span class="icon">⚔</span> ' + b.commandersLabel + '</div>' +
+          '<p class="detail-text names">' + b.commanders + '</p>' +
+        '</div>'
+      );
+
+      // Ход битвы (несколько абзацев)
+      let courseHTML = '<div class="detail-section course">' +
+        '<div class="section-label"><span class="icon">📜</span> Ход битвы</div>';
+      b.course.forEach(function(par){
+        courseHTML += '<p class="detail-text">' + par + '</p>';
+      });
+      courseHTML += '</div>';
+      scroll.insertAdjacentHTML('beforeend', courseHTML);
+
+      // Карта
+      scroll.insertAdjacentHTML('beforeend',
+        '<div class="detail-section map-section">' +
+          '<div class="section-label"><span class="icon">🗺</span> Карта-схема</div>' +
+          '<div class="map-frame">' +
+            '<img src="' + b.img + '" alt="' + b.title + '" loading="lazy">' +
+          '</div>' +
+          '<p class="map-caption">' + b.imgCaption + '</p>' +
+        '</div>'
+      );
+
+      // Итог
+      scroll.insertAdjacentHTML('beforeend',
+        '<div class="detail-section outcome">' +
+          '<div class="section-label"><span class="icon">✦</span> Итог</div>' +
+          '<p class="detail-text">' + b.outcome + '</p>' +
+        '</div>'
+      );
+
+      // Задания
+      let tasksHTML = '<div class="detail-section quiz-section-fipi">' +
+        '<div class="section-label"><span class="icon">📝</span> Задания в формате ФИПИ</div>';
+      b.tasks.forEach(function(t, i){
+        tasksHTML +=
+          '<div class="fipi-task" data-answer="' + t.answer + '">' +
+            '<p class="task-text"><strong>' + (i+1) + '.</strong> ' + t.q + '</p>' +
+            '<div class="answer-row">' +
+              '<input type="text" class="answer-input" placeholder="Введите ответ...">' +
+              '<button class="check-btn">Проверить</button>' +
+            '</div>' +
+            '<div class="answer-result"></div>' +
+          '</div>';
+      });
+      tasksHTML += '</div>';
+      scroll.insertAdjacentHTML('beforeend', tasksHTML);
+
+      inner.appendChild(scroll);
+
+      // Ручка ресайза
+      const handle = document.createElement('div');
+      handle.className = 'resize-handle';
+      handle.innerHTML =
+        '<span class="resize-icon icon-up">▲</span>' +
+        '<span class="resize-label">Потяните, чтобы изменить высоту</span>' +
+        '<span class="resize-icon icon-down">▼</span>';
+      inner.appendChild(handle);
+
+      details.appendChild(inner);
+      item.appendChild(details);
+      section.appendChild(item);
+    });
+
+    root.appendChild(section);
+  });
+
+  /* ================================================================
+     ИНТЕРАКТИВ
+     ================================================================ */
+  const items = document.querySelectorAll('.battle-item');
+
+  /* Тема */
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  const htmlEl = document.documentElement;
 
   function applyTheme(theme){
     htmlEl.setAttribute('data-theme', theme);
     themeIcon.textContent = (theme === 'dark') ? '☀️' : '🌙';
     try { localStorage.setItem('theme', theme); } catch(e){}
   }
-
-  var saved = 'dark';
+  let saved = 'dark';
   try { saved = localStorage.getItem('theme') || 'dark'; } catch(e){}
   applyTheme(saved);
 
   themeToggle.addEventListener('click', function(){
-    var current = htmlEl.getAttribute('data-theme');
-    applyTheme(current === 'dark' ? 'light' : 'dark');
+    applyTheme(htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
   });
 
-  var items = document.querySelectorAll('.battle-item');
-
+  /* Аккордеон */
   items.forEach(function(item){
-    var header = item.querySelector('.battle-header');
+    const header = item.querySelector('.battle-header');
     header.addEventListener('click', function(){
-      var isOpen = item.classList.contains('open');
+      const isOpen = item.classList.contains('open');
       items.forEach(function(other){
         if (other !== item) other.classList.remove('open');
       });
@@ -1287,11 +1428,140 @@ header .years{
   });
 
   document.getElementById('expandAll').addEventListener('click', function(){
-    items.forEach(function(item){ item.classList.add('open'); });
+    items.forEach(function(i){ i.classList.add('open'); });
   });
   document.getElementById('collapseAll').addEventListener('click', function(){
-    items.forEach(function(item){ item.classList.remove('open'); });
+    items.forEach(function(i){ i.classList.remove('open'); });
   });
+
+  /* ================================================================
+     РЕСАЙЗ С ЗАЩИТОЙ ОТ ПРОКРУТКИ СТРАНИЦЫ
+     ================================================================ */
+  document.querySelectorAll('.battle-item').forEach(function(item){
+    const handle = item.querySelector('.resize-handle');
+    const scrollContent = item.querySelector('.scroll-content');
+    if(!handle || !scrollContent) return;
+
+    let startY = 0;
+    let startHeight = 0;
+    let isDragging = false;
+
+    function applyDelta(clientY){
+      const dy = clientY - startY;
+      let newHeight = startHeight + dy;
+      if(newHeight < 150) newHeight = 150;
+      if(newHeight > 1500) newHeight = 1500;
+      scrollContent.style.maxHeight = newHeight + 'px';
+    }
+
+    /* --- Мышь --- */
+    handle.addEventListener('mousedown', function(e){
+      e.preventDefault();
+      isDragging = true;
+      startY = e.clientY;
+      startHeight = scrollContent.offsetHeight;
+      handle.classList.add('dragging');
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'ns-resize';
+    });
+
+    document.addEventListener('mousemove', function(e){
+      if(!isDragging) return;
+      applyDelta(e.clientY);
+    });
+
+    document.addEventListener('mouseup', function(){
+      if(!isDragging) return;
+      isDragging = false;
+      handle.classList.remove('dragging');
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    });
+
+    /* --- Касание (главное исправление) --- */
+    handle.addEventListener('touchstart', function(e){
+      if(e.touches.length !== 1) return;
+      // Ключевое: preventDefault блокирует прокрутку страницы
+      e.preventDefault();
+      isDragging = true;
+      startY = e.touches[0].clientY;
+      startHeight = scrollContent.offsetHeight;
+      handle.classList.add('dragging');
+    }, {passive: false});
+
+    document.addEventListener('touchmove', function(e){
+      if(!isDragging || e.touches.length !== 1) return;
+      // Ключевое: preventDefault блокирует прокрутку страницы
+      e.preventDefault();
+      applyDelta(e.touches[0].clientY);
+    }, {passive: false});
+
+    document.addEventListener('touchend', function(){
+      if(!isDragging) return;
+      isDragging = false;
+      handle.classList.remove('dragging');
+    });
+
+    document.addEventListener('touchcancel', function(){
+      if(!isDragging) return;
+      isDragging = false;
+      handle.classList.remove('dragging');
+    });
+  });
+
+  /* ================================================================
+     ПРОВЕРКА ОТВЕТОВ
+     ================================================================ */
+  function normalize(str){
+    return str
+      .toLowerCase()
+      .replace(/ё/g, 'е')
+      .replace(/[«»"']/g, '')
+      .replace(/\s+/g, ' ')
+      .replace(/[.,;:!?]/g, '')
+      .trim();
+  }
+
+  document.querySelectorAll('.fipi-task').forEach(function(task){
+    const input = task.querySelector('.answer-input');
+    const btn = task.querySelector('.check-btn');
+    const result = task.querySelector('.answer-result');
+    const correctAnswers = task.getAttribute('data-answer').split('|');
+
+    function check(){
+      const userAnswer = normalize(input.value);
+      if(!userAnswer){
+        result.className = 'answer-result show fail';
+        result.innerHTML = '<span class="label">⚠️</span> Введите ответ.';
+        return;
+      }
+      const isCorrect = correctAnswers.some(function(ans){
+        return normalize(ans) === userAnswer;
+      });
+      input.classList.remove('correct', 'wrong');
+      if(isCorrect){
+        input.classList.add('correct');
+        result.className = 'answer-result show ok';
+        result.innerHTML = '<span class="label">✅ Верно!</span>';
+      } else {
+        input.classList.add('wrong');
+        result.className = 'answer-result show fail';
+        result.innerHTML = '<span class="label">❌ Неверно.</span> Правильный ответ: <strong>' +
+          correctAnswers[0] + '</strong>';
+      }
+    }
+
+    btn.addEventListener('click', check);
+    input.addEventListener('keypress', function(e){
+      if(e.key === 'Enter') check();
+    });
+    input.addEventListener('input', function(){
+      input.classList.remove('correct', 'wrong');
+      result.className = 'answer-result';
+      result.innerHTML = '';
+    });
+  });
+
 })();
 </script>
 </body>
