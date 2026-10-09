@@ -478,6 +478,175 @@ footer::before{
       commanders: 'Г.К. Жуков (Западный фронт), И.С. Конев (Калининский фронт), С.К. Тимошенко (Юго-Западный фронт), К.К. Рокоссовский (16-я армия), И.В. Панфилов (316-я стрелковая дивизия), В.В. Клочков (политрук 4-й роты), И.В. Болдин',
       course: [
         'Немецкое командование начало операцию «Тайфун» — генеральное наступление на Москву. План предусматривал окружение и уничтожение основных сил Западного, Резервного и Брянского фронтов, после чего должен был последовать захват столицы.',
+        'В октябре 1941 года враг прорвал оборону и окружил крупные силы советских войск под Вязьмой и Брянском. Критический момент наступил в конце октября – ноябре, ap-bg);line-height:0;
+}
+.map-frame img{width:100%;height:auto;display:block;filter:saturate(.85) contrast(1.02);transition:transform .5s ease, filter .3s ease}
+.map-frame:hover img{transform:scale(1.01);filter:saturate(1) contrast(1.05)}
+.map-caption{
+  font-size:.7rem;color:var(--text-faint);margin-top:.5rem;
+  line-height:1.45;font-style:italic;font-family:var(--font-serif);
+}
+
+.task{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:.75rem .9rem;margin-bottom:.55rem;font-size:.85rem;
+}
+.task:last-child{margin-bottom:0}
+.task-num{
+  display:inline-block;font-family:var(--font-mono);font-size:.68rem;
+  font-weight:700;color:var(--text-faint);border:1px solid var(--border-strong);
+  border-radius:2px;padding:.05rem .35rem;margin-right:.4rem;vertical-align:middle;line-height:1.5;
+}
+.task-q{color:var(--text);line-height:1.6;margin-bottom:.55rem}
+.answer-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.answer-input{
+  flex:1;min-width:170px;padding:.5rem .7rem;
+  border:1px solid var(--input-border);border-radius:var(--radius-sm);
+  background:var(--input-bg);color:var(--text);
+  font-size:.83rem;transition:border-color var(--transition),box-shadow var(--transition);
+}
+.answer-input::placeholder{color:var(--text-faint)}
+.answer-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(200,163,73,.15)}
+.answer-input.correct{border-color:var(--correct-border);background:var(--correct-bg)}
+.answer-input.wrong{border-color:var(--wrong-border);background:var(--wrong-bg)}
+
+.check-btn{
+  padding:.5rem 1rem;border:none;border-radius:var(--radius-sm);
+  background:var(--btn-bg);color:var(--btn-text);
+  font-size:.75rem;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;cursor:pointer;
+  transition:all var(--transition);white-space:nowrap;
+}
+.check-btn:hover{filter:brightness(1.1);box-shadow:0 2px 8px rgba(200,163,73,.3)}
+.check-btn:active{transform:translateY(1px)}
+
+.result{
+  margin-top:.55rem;padding:.5rem .7rem;border-radius:var(--radius-sm);
+  font-size:.78rem;line-height:1.5;display:none;
+  font-family:var(--font-mono);
+}
+.result.show{display:block}
+.result.ok{background:var(--correct-bg);border-left:2px solid var(--correct-border);color:var(--text)}
+.result.fail{background:var(--wrong-bg);border-left:2px solid var(--wrong-border);color:var(--text)}
+.result .tag{font-weight:700;letter-spacing:.06em;margin-right:.4rem}
+.result.ok .tag{color:var(--correct-border)}
+.result.fail .tag{color:var(--wrong-border)}
+
+footer{
+  text-align:center;margin-top:3rem;padding-top:1.5rem;position:relative;
+  font-family:var(--font-mono);font-size:.68rem;color:var(--text-faint);letter-spacing:.1em;
+}
+footer::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:50%;height:1px;background:var(--divider);
+}
+
+.view{animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.no-results{
+  text-align:center;padding:2.5rem 1rem;
+  color:var(--text-faint);font-family:var(--font-mono);font-size:.8rem;
+  display:none;
+}
+.no-results.show{display:block}
+.no-results .big{
+  display:block;font-family:var(--font-serif);font-size:1.4rem;
+  color:var(--text-muted);margin-bottom:.5rem;
+}
+
+@media (max-width:640px){
+  body{padding:1.2rem .65rem 3rem}
+  .theme-toggle{width:38px;height:38px;font-size:1rem;top:.9rem;right:.9rem}
+  .battle-item{padding:1.05rem 1.15rem;gap:.85rem}
+  .battle-item .num{font-size:.68rem;padding:.25rem .5rem}
+  .section{padding:.75rem .85rem}
+  .section-text{font-size:.85rem}
+  .answer-input{font-size:.8rem}
+  .check-btn{font-size:.7rem;padding:.45rem .85rem}
+  .year-title .year-meta{display:none}
+  .search-input{height:48px;padding-left:3rem}
+  .search-icon{left:14px}
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+  <span id="themeIcon">☀</span>
+</button>
+
+<div class="container">
+  <div id="app"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================================================================
+     ДАННЫЕ — 29 битв, задания в формате ФИПИ
+     ================================================================ */
+  const BATTLES = [
+    {
+      id: 'brest', year: 1941, index: '01',
+      title: 'Оборона Бреста',
+      date: '22 июня — июль 1941',
+      para: '§29 · С. 308–321',
+      img: 'images/A.png',
+      imgCaption: 'Схема обороны Брестской крепости, 1941 г.',
+      commandersLabel: 'Участники',
+      commanders: 'П.М. Гаврилов, И.Н. Зубачев, Е.М. Фомин, А.М. Кижеватов',
+      course: [
+        'Брестская крепость первой приняла удар немецких войск 22 июня 1941 года. Гарнизон, насчитывавший около 3,5 тысяч человек, оказался в полном окружении уже в первые часы войны. Немецкое командование, имея многократное превосходство в силах и артиллерии, рассчитывало взять крепость за несколько часов — к исходу первого дня наступления.',
+        'Однако бойцы под командованием майора П.М. Гаврилова, капитана И.Н. Зубачева, полкового комиссара Е.М. Фомина и лейтенанта А.М. Кижеватова организовали упорную оборону. Штурмовые группы вермахта несли большие потери, захлёбываясь в узких коридорах и казематах. Крепость оборонялась не как обычный укреплённый пункт, а как настоящая крепость-цитадель.',
+        'Отдельные группы защитников сражались в подвалах и казематах более месяца — до конца июля. На стенах крепости остались надписи: «Умираем, но не сдаёмся!», «Прощай, Родина!». Даже когда крепость официально была оставлена, в её развалинах продолжали биться одиночные бойцы.',
+        'Оборона Брестской крепости стала символом стойкости и массового героизма советских солдат в первые, самые тяжёлые дни войны. Она показала, что план блицкрига даёт сбой с первых часов.'
+      ],
+      outcome: 'Сдача крепости. В 1965 году Брестской крепости присвоено звание «Крепость-герой».',
+      tasks: [
+        { q:'В обороне Брестской крепости важную роль сыграл ____________. (Введите фамилию)', answer:'гаврилов|п.м. гаврилов|п м гаврилов' },
+        { q:'Заполните пропуск: «Оборона Брестской крепости началась в ______ 1941 года».', answer:'июне|июнь|июн' },
+        { q:'В каком году Брестской крепости было присвоено звание «Крепость-герой»?', answer:'1965' },
+        { q:'Укажите название реки, на которой расположена Брестская крепость.', answer:'западный буг|буг' },
+        { q:'Установите соответствие: А) Начало обороны Брестской крепости — Б) Освобождение Бреста — В) Присвоение звания «Крепость-герой». Годы: 1) 1941 2) 1944 3) 1965. Ответьте цифрами через запятую.', answer:'1, 2, 3' }
+      ]
+    },
+    {
+      id: 'smolensk', year: 1941, index: '02',
+      title: 'Смоленское сражение',
+      date: '10 июля — 10 сентября 1941',
+      para: '§29 · С. 308–321',
+      img: 'images/B.jpg',
+      imgCaption: 'Карта боевых действий на Смоленском направлении, 1941 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'С.К. Тимошенко (Западный фронт), В.Я. Качалов, В.А. Хоменко, С.А. Калинин, И.И. Масленников, К.К. Рокоссовский, А.И. Еременко (Брянский фронт)',
+      course: [
+        'Смоленское сражение стало одним из крупнейших оборонительных и наступательных сражений первого периода войны. Немецкая группа армий «Центр» стремилась кратчайшим путём прорваться к Москве через Смоленск — «ключ-город» на пути к столице.',
+        'Советские войска Западного, Резервного и Брянского фронтов вели тяжёлые оборонительные бои, постоянно контратакуя. В районе Смоленска развернулось крупное танковое сражение, в котором с обеих сторон участвовали сотни машин.',
+        'Особую роль сыграли соединения под командованием К.К. Рокоссовского и А.И. Еременко. В ходе сражения советское командование впервые применило новые артиллерийские и танковые соединения, а также впервые провело крупную наступательную операцию — Рославльско-Новозыбковскую.',
+        'Главный итог сражения: впервые за всю кампанию немецкие войска были вынуждены перейти к обороне на главном направлении. План молниеносной войны дал первую серьёзную трещину. Задержка под Смоленском позволила советскому командованию выиграть время для подготовки обороны Москвы.'
+      ],
+      outcome: 'Предпринята первая попытка контрнаступления, немецкие войска впервые перешли к обороне. Смоленск был оставлен 29 июля 1941 года.',
+      tasks: [
+        { q:'Укажите фамилию командующего Западным фронтом в Смоленском сражении.', answer:'тимошенко' },
+        { q:'Назовите немецкую группу армий, наступавшую на Смоленск.', answer:'центр' },
+        { q:'В каком году Смоленск был освобождён советскими войсками?', answer:'1943' },
+        { q:'Назовите фамилию командующего 16-й армией, особо отличившегося в Смоленском сражении.', answer:'рокоссовский' },
+        { q:'Расположите события в хронологической последовательности: 1) Смоленское сражение 2) Начало блокады Ленинграда 3) Московская битва. Ответьте цифрами через запятую.', answer:'1, 2, 3' }
+      ]
+    },
+    {
+      id: 'moscow', year: 1941, index: '03',
+      title: 'Московская битва (операция «Тайфун»)',
+      date: '30 сентября 1941 — 20 апреля 1942',
+      para: '§30 · С. 322–337',
+      img: 'images/C.webp',
+      imgCaption: 'Великая битва под Москвой. Карта обороны и разгрома немецких войск.',
+      commandersLabel: 'Командующие',
+      commanders: 'Г.К. Жуков (Западный фронт), И.С. Конев (Калининский фронт), С.К. Тимошенко (Юго-Западный фронт), К.К. Рокоссовский (16-я армия), И.В. Панфилов (316-я стрелковая дивизия), В.В. Клочков (политрук 4-й роты), И.В. Болдин',
+      course: [
+        'Немецкое командование начало операцию «Тайфун» — генеральное наступление на Москву. План предусматривал окружение и уничтожение основных сил Западного, Резервного и Брянского фронтов, после чего должен был последовать захват столицы.',
         'В октябре 1941 года враг прорвал оборону и окружил крупные силы советских войск под Вязьмой и Брянском. Критический момент наступил в конце октября – ноябре, le:hover .icon-down,
 .resize-handle.dragging .icon-down{transform:translateY(2px)}
 
