@@ -3,315 +3,482 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Хроника Великой Отечественной войны 1941–1945</title>
+<title>1941 — 1945 · Великая Отечественная война</title>
 <style>
 :root{
-  --accent:#c9a227;
-  --accent-deep:#a8841a;
-  --course-color:#4a7a9c;
-  --radius-lg:14px;
-  --radius-md:10px;
-  --radius-sm:6px;
-  --transition:.28s cubic-bezier(.4,0,.2,1);
-  --font-main:Georgia,'Times New Roman',serif;
-  --font-ui:'Segoe UI',Roboto,system-ui,-apple-system,sans-serif;
+  --accent:#c8a349;
+  --accent-deep:#8f7320;
+  --red:#b0413e;
+  --course:#6a8ba8;
+  --radius:8px;
+  --radius-sm:5px;
+  --transition:.22s cubic-bezier(.4,0,.2,1);
+  --font-serif:'Georgia','Iowan Old Style','Times New Roman',serif;
+  --font-sans:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono','SF Mono','Consolas',monospace;
 }
 html[data-theme="dark"]{
-  --bg:#0e1116;
-  --bg-gradient:radial-gradient(ellipse at top,#171d26 0%,#0b0e12 75%);
-  --surface:#151a21;
-  --surface-hover:#1a2029;
-  --surface-alt:#10151b;
-  --border:#232b36;
-  --border-hover:#2f3947;
-  --text:#dde3ea;
-  --text-muted:#8b96a5;
-  --text-faint:#5d6875;
-  --heading:#e8d5a8;
-  --year-color:#d4b96a;
-  --shadow:0 4px 18px rgba(0,0,0,.4);
-  --shadow-hover:0 8px 28px rgba(0,0,0,.55);
-  --badge-bg:#232b36;
-  --badge-text:#b8c2cf;
-  --outcome-bg:#141d18;
-  --course-bg:#111a22;
-  --divider:linear-gradient(90deg,transparent,#2f3947,transparent);
-  --toggle-bg:#151a21;
-  --toggle-color:#d4b96a;
-  --map-bg:#0d1116;
-  --resize-bg:#1a2029;
-  --resize-bg-hover:#232b36;
-  --resize-icon:#8b96a5;
-  --resize-icon-hover:#c9a227;
-  --task-bg:#131a22;
-  --input-bg:#0b0f14;
-  --input-border:#2f3947;
-  --input-focus:#c9a227;
-  --correct-bg:#0f2a1a;
-  --correct-border:#4a9c6a;
-  --wrong-bg:#2a1010;
-  --wrong-border:#c0392b;
-  --btn-bg:#c9a227;
-  --btn-text:#1a1500;
+  --bg:#0d1014;
+  --surface:#141a21;
+  --surface-2:#181f27;
+  --surface-3:#1c242e;
+  --border:#242e3a;
+  --border-strong:#333f4d;
+  --text:#d5dce5;
+  --text-muted:#8b98a8;
+  --text-faint:#5c6775;
+  --heading:#e8d9ac;
+  --map-bg:#0a0d11;
+  --correct-bg:#0f2418;
+  --correct-border:#4b9c68;
+  --wrong-bg:#261010;
+  --wrong-border:#b0413e;
+  --input-bg:#0a0d11;
+  --input-border:#333f4d;
+  --btn-bg:#c8a349;
+  --btn-text:#1a1400;
+  --shadow:0 2px 8px rgba(0,0,0,.35);
+  --shadow-hover:0 6px 20px rgba(0,0,0,.5);
+  --divider:linear-gradient(90deg,transparent,#333f4d 20%,#333f4d 80%,transparent);
+  --hl-bg:rgba(242,214,117,.18);
+  --hl-text:#f2d675;
 }
 html[data-theme="light"]{
-  --bg:#f4f1ea;
-  --bg-gradient:radial-gradient(ellipse at top,#faf8f3 0%,#eae4d8 75%);
+  --bg:#f3efe6;
   --surface:#ffffff;
-  --surface-hover:#fdfbf7;
-  --surface-alt:#f7f4ed;
-  --border:#e4dccb;
-  --border-hover:#cfc2a5;
+  --surface-2:#faf7f0;
+  --surface-3:#f4efe3;
+  --border:#e0d6c0;
+  --border-strong:#c4b795;
   --text:#2a2f36;
-  --text-muted:#5f6b7a;
-  --text-faint:#8a94a3;
+  --text-muted:#5c6674;
+  --text-faint:#8a94a1;
   --heading:#5a4520;
-  --year-color:#8a6a1f;
-  --shadow:0 4px 16px rgba(120,100,60,.1);
-  --shadow-hover:0 8px 26px rgba(120,100,60,.18);
-  --badge-bg:#f2ecdd;
-  --badge-text:#6b5a35;
-  --outcome-bg:#f6f2e3;
-  --course-bg:#eef4f8;
-  --divider:linear-gradient(90deg,transparent,#d8ccb2,transparent);
-  --toggle-bg:#ffffff;
-  --toggle-color:#b8860b;
-  --map-bg:#f0ece2;
-  --resize-bg:#f7f4ed;
-  --resize-bg-hover:#eef4f8;
-  --resize-icon:#8a94a3;
-  --resize-icon-hover:#b8860b;
-  --task-bg:#fbf8f1;
+  --map-bg:#f8f5ee;
+  --correct-bg:#eef7f0;
+  --correct-border:#4b9c68;
+  --wrong-bg:#fdeeee;
+  --wrong-border:#b0413e;
   --input-bg:#ffffff;
   --input-border:#d8ccb2;
-  --input-focus:#b8860b;
-  --correct-bg:#eef7f0;
-  --correct-border:#4a9c6a;
-  --wrong-bg:#fdeeee;
-  --wrong-border:#c0392b;
-  --btn-bg:#b8860b;
+  --btn-bg:#8f7320;
   --btn-text:#ffffff;
+  --shadow:0 1px 4px rgba(120,100,60,.08);
+  --shadow-hover:0 4px 14px rgba(120,100,60,.15);
+  --divider:linear-gradient(90deg,transparent,#d8ccb2 20%,#d8ccb2 80%,transparent);
+  --hl-bg:rgba(200,163,73,.22);
+  --hl-text:#8f7320;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  font-family:var(--font-ui);
+  font-family:var(--font-sans);
   background:var(--bg);
-  background-image:var(--bg-gradient);
-  background-attachment:fixed;
   color:var(--text);
   line-height:1.6;
   padding:2rem 1rem 4rem;
   min-height:100vh;
   transition:background-color var(--transition),color var(--transition);
 }
-.container{max-width:960px;margin:0 auto}
+.container{max-width:920px;margin:0 auto}
 
 .theme-toggle{
   position:fixed;top:1.25rem;right:1.25rem;z-index:100;
-  width:48px;height:48px;border-radius:50%;
+  width:42px;height:42px;border-radius:50%;
   border:1px solid var(--border);
-  background:var(--toggle-bg);
-  color:var(--toggle-color);
+  background:var(--surface);
+  color:var(--accent);
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:1.3rem;
-  box-shadow:var(--shadow);
-  transition:transform var(--transition),background-color var(--transition),
-             border-color var(--transition),box-shadow var(--transition),color var(--transition);
+  font-size:1.1rem;box-shadow:var(--shadow);
+  transition:all var(--transition);
 }
-.theme-toggle:hover{transform:scale(1.08);border-color:var(--accent);box-shadow:var(--shadow-hover)}
-.theme-toggle:active{transform:scale(.94)}
+.theme-toggle:hover{border-color:var(--accent);transform:rotate(20deg)}
 
-header{text-align:center;margin-bottom:2.5rem;padding-bottom:1.5rem;position:relative}
-header::after{
-  content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  width:50%;height:1px;background:var(--divider);
+header.page-header{
+  text-align:center;
+  margin-bottom:1.5rem;
+  padding-bottom:1.25rem;
+  position:relative;
 }
-.header-emblem{font-size:1.8rem;margin-bottom:.4rem;color:var(--accent);opacity:.9}
-header h1{
-  font-family:var(--font-main);
-  font-size:clamp(1.5rem,4vw,2.2rem);
-  font-weight:700;letter-spacing:.3px;color:var(--heading);
-  margin-bottom:.5rem;
+header.page-header::after{
+  content:"";
+  position:absolute;
+  bottom:0;left:50%;transform:translateX(-50%);
+  width:50%;height:1px;
+  background:var(--divider);
 }
-header .subtitle{
-  color:var(--text-faint);font-size:clamp(.78rem,2vw,.95rem);
-  font-style:italic;letter-spacing:1.2px;text-transform:uppercase;
+header.page-header h1{
+  font-family:var(--font-serif);
+  font-size:clamp(1.8rem,5vw,2.6rem);
+  font-weight:700;
+  color:var(--heading);
+  letter-spacing:.02em;
+  margin-bottom:.4rem;
+  line-height:1.15;
 }
-header .years{
-  display:inline-block;margin-top:.9rem;padding:.3rem 1.1rem;
-  border:1px solid var(--border);border-radius:30px;color:var(--accent);
-  font-size:.78rem;letter-spacing:2.5px;font-weight:600;
-}
-
-.controls{display:flex;justify-content:center;gap:.6rem;margin-bottom:2rem;flex-wrap:wrap}
-.control-btn{
-  padding:.45rem 1rem;border-radius:30px;border:1px solid var(--border);
-  background:var(--surface);color:var(--text-muted);
-  font-size:.78rem;font-weight:600;letter-spacing:.3px;cursor:pointer;
-  transition:all var(--transition);font-family:var(--font-ui);
-}
-.control-btn:hover{
-  border-color:var(--accent);color:var(--accent);
-  background:var(--surface-hover);box-shadow:var(--shadow);
+header.page-header .subtitle{
+  font-size:.7rem;
+  color:var(--text-faint);
+  letter-spacing:.26em;
+  text-transform:uppercase;
+  font-weight:500;
 }
 
-.year-section{margin-bottom:2.5rem}
-.year-title{
-  font-family:var(--font-main);
-  font-size:clamp(1.3rem,3.5vw,1.7rem);
-  font-weight:700;color:var(--year-color);
-  margin-bottom:1.2rem;padding-left:.9rem;
-  position:relative;letter-spacing:.3px;
-  display:flex;align-items:center;gap:.7rem;
-}
-.year-title::before{
-  content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
-  width:3px;height:75%;border-radius:2px;
-  background:linear-gradient(180deg,var(--accent),var(--accent-deep));
-}
-.year-title .year-line{flex:1;height:1px;background:var(--divider)}
-
-.battle-item{
-  background:var(--surface);
-  border-radius:var(--radius-lg);
-  margin-bottom:.75rem;
-  box-shadow:var(--shadow);
+/* ПОИСК — лупа через flex, без transform */
+.search-box{position:relative;margin-bottom:1.5rem}
+.search-input{
+  width:100%;
+  height:52px;
+  padding:0 1rem 0 3.2rem;
   border:1px solid var(--border);
-  transition:transform var(--transition),box-shadow var(--transition),
-             border-color var(--transition),background-color var(--transition);
-}
-.battle-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:var(--border-hover)}
-.battle-item.open{border-color:var(--accent)}
-.battle-header{
-  display:flex;align-items:center;gap:.9rem;
-  padding:1rem 1.3rem;
-  cursor:pointer;user-select:none;
+  border-radius:var(--radius);
   background:var(--surface);
-  border-radius:var(--radius-lg);
-  transition:background-color var(--transition);
-  position:relative;
+  color:var(--text);
+  font-family:var(--font-sans);
+  font-size:.9rem;
+  transition:border-color var(--transition),box-shadow var(--transition);
 }
-.battle-header:hover{background:var(--surface-hover)}
-.battle-item.open .battle-header{background:var(--surface-hover);border-radius:var(--radius-lg) var(--radius-lg) 0 0}
-.battle-index{
-  flex-shrink:0;width:32px;height:32px;border-radius:50%;
-  background:linear-gradient(135deg,var(--accent),var(--accent-deep));
-  color:#fff;font-weight:700;font-size:.78rem;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 8px rgba(201,162,39,.3);
-  transition:transform var(--transition);
+.search-input::placeholder{color:var(--text-faint)}
+.search-input:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(200,163,73,.12);
 }
-.battle-item.open .battle-index{transform:scale(1.08)}
-.battle-title-wrap{flex:1;min-width:0}
-.battle-header h3{
-  font-family:var(--font-main);
-  font-size:clamp(.92rem,2.3vw,1.08rem);
-  font-weight:700;color:var(--text);
-  line-height:1.35;margin-bottom:.2rem;
-  transition:color var(--transition);
-}
-.battle-item.open .battle-header h3{color:var(--accent)}
-.date-badge{
-  display:inline-block;background:var(--badge-bg);color:var(--badge-text);
-  font-size:.68rem;padding:.15rem .6rem;border-radius:14px;
-  font-weight:600;letter-spacing:.3px;
-}
-.arrow{
-  flex-shrink:0;font-size:.85rem;color:var(--text-muted);
-  transition:transform var(--transition),color var(--transition);
-  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
-  border-radius:50%;border:1px solid var(--border);background:var(--surface-alt);
-}
-.battle-item.open .arrow{
-  transform:rotate(180deg);
-  color:var(--accent);border-color:var(--accent);
-}
-
-.battle-details{
-  display:grid;
-  grid-template-rows:0fr;
-  transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1);
-  background:var(--surface-alt);
-  border-radius:0 0 var(--radius-lg) var(--radius-lg);
-  overflow:hidden;
-}
-.battle-item.open .battle-details{grid-template-rows:1fr}
-.battle-details-inner{
-  min-height:0;
-  padding:0 1.3rem;
-  border-top:1px solid transparent;
-  transition:padding .3s ease,border-color .3s ease;
-  position:relative;
-  display:flex;
-  flex-direction:column;
-}
-.battle-item.open .battle-details-inner{
-  padding:1.2rem 1.3rem 0;
-  border-top-color:var(--border);
-}
-.scroll-content{
-  max-height:450px;
-  overflow-y:auto;
-  padding-right:.5rem;
-  padding-bottom:.5rem;
-  transition:max-height .15s ease;
-  overscroll-behavior:contain;
-}
-.scroll-content::-webkit-scrollbar{width:8px}
-.scroll-content::-webkit-scrollbar-track{background:transparent}
-.scroll-content::-webkit-scrollbar-thumb{
-  background:var(--border-hover);border-radius:4px;
-}
-.scroll-content::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-
-/* ===== РУЧКА РЕСАЙЗА (новая, заметная) ===== */
-.resize-handle{
-  height:34px;
-  margin:0 -.3rem;
-  background:var(--resize-bg);
-  border-radius:0 0 var(--radius-lg) var(--radius-lg);
-  cursor:ns-resize;
+.search-icon{
+  position:absolute;
+  left:16px;
+  top:0;
+  height:100%;
+  width:20px;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:.35rem;
-  position:relative;
-  user-select:none;
-  flex-shrink:0;
-  border-top:1px solid var(--border);
-  transition:background-color .2s ease;
-  /* Ключевое: блокирует прокрутку страницы при touch-жестах на ручке */
-  touch-action:none;
-  -webkit-tap-highlight-color:transparent;
+  color:var(--text-faint);
+  pointer-events:none;
 }
-.resize-handle:hover,
-.resize-handle.dragging{
-  background:var(--resize-bg-hover);
+.search-icon svg{width:18px;height:18px;display:block;flex-shrink:0}
+.search-input:focus ~ .search-icon{color:var(--accent)}
+
+.search-hint{
+  display:flex;flex-wrap:wrap;gap:.4rem;
+  margin-top:.65rem;padding-left:.2rem;
+  font-family:var(--font-mono);font-size:.68rem;color:var(--text-faint);
 }
-.resize-handle .resize-icon{
-  font-size:.85rem;
-  color:var(--resize-icon);
-  transition:color .2s ease,transform .2s ease;
-  line-height:1;
+.search-hint .hint-item{
+  padding:.15rem .5rem;border:1px solid var(--border);
+  border-radius:2px;cursor:pointer;transition:all var(--transition);
 }
-.resize-handle .resize-label{
-  font-size:.68rem;
-  letter-spacing:.4px;
-  color:var(--resize-icon);
-  font-weight:600;
-  transition:color .2s ease;
-  white-space:nowrap;
+.search-hint .hint-item:hover{border-color:var(--accent);color:var(--accent)}
+
+.year-section{margin-bottom:2.5rem}
+.year-title{
+  display:flex;align-items:baseline;gap:1rem;
+  margin-bottom:1.25rem;padding-bottom:.6rem;
+  border-bottom:1px solid var(--border);
 }
-.resize-handle:hover .resize-icon,
-.resize-handle:hover .resize-label,
-.resize-handle.dragging .resize-icon,
-.resize-handle.dragging .resize-label{
-  color:var(--resize-icon-hover);
+.year-title .year-num{
+  font-family:var(--font-serif);
+  font-size:clamp(1.8rem,4.5vw,2.3rem);
+  font-weight:700;color:var(--accent);line-height:1;
 }
-.resize-handle:hover .icon-up,
-.resize-handle.dragging .icon-up{transform:translateY(-2px)}
-.resize-handle:hover .icon-down,
+.year-title .year-label{
+  font-size:.72rem;color:var(--text-faint);
+  letter-spacing:.24em;text-transform:uppercase;font-weight:500;
+}
+.year-title .year-meta{
+  margin-left:auto;font-family:var(--font-mono);
+  font-size:.7rem;color:var(--text-faint);
+}
+
+.battle-item{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:1.3rem 1.45rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:.8rem;
+  box-shadow:var(--shadow);cursor:pointer;
+  position:relative;overflow:hidden;
+  text-decoration:none;color:inherit;
+  transition:border-color var(--transition),box-shadow var(--transition),transform var(--transition);
+}
+.battle-item::before{
+  content:"";position:absolute;top:0;left:0;bottom:0;width:3px;
+  background:var(--accent);opacity:.4;transition:opacity var(--transition);
+}
+.battle-item:hover{border-color:var(--border-strong);box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.battle-item:hover::before{opacity:1}
+.battle-item.hidden{display:none}
+
+.battle-item .num{
+  flex-shrink:0;font-family:var(--font-mono);font-size:.72rem;
+  font-weight:700;color:var(--text-faint);
+  padding:.3rem .6rem;border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);background:var(--surface-3);
+  margin-top:.15rem;transition:color var(--transition),border-color var(--transition);
+}
+.battle-item:hover .num{color:var(--accent);border-color:var(--accent)}
+.battle-item .body{flex:1;min-width:0}
+.battle-item h3{
+  font-family:var(--font-serif);
+  font-size:clamp(1rem,2.4vw,1.15rem);
+  font-weight:700;color:var(--text);
+  line-height:1.35;margin-bottom:.35rem;
+  transition:color var(--transition);
+}
+.battle-item:hover h3{color:var(--accent)}
+.battle-item .date{
+  font-family:var(--font-mono);font-size:.72rem;
+  color:var(--text-faint);letter-spacing:.03em;
+  display:block;margin-bottom:.3rem;
+}
+.battle-item .medinsky-line{
+  font-family:var(--font-mono);font-size:.66rem;
+  color:var(--accent-deep);letter-spacing:.03em;display:block;
+}
+.battle-item .go{
+  flex-shrink:0;color:var(--text-faint);font-size:.9rem;
+  margin-top:.35rem;transition:transform var(--transition),color var(--transition);
+}
+.battle-item:hover .go{color:var(--accent);transform:translateX(3px)}
+
+mark.hl{
+  background:var(--hl-bg);color:var(--hl-text);
+  padding:0 .15em;border-radius:2px;font-weight:600;
+}
+
+.battle-page .back{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.55rem 1rem;border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);background:var(--surface);
+  color:var(--text-muted);font-size:.76rem;font-weight:600;
+  letter-spacing:.05em;cursor:pointer;
+  transition:all var(--transition);margin-bottom:1.75rem;text-decoration:none;
+}
+.battle-page .back:hover{border-color:var(--accent);color:var(--accent);background:var(--surface-2)}
+
+.battle-page .page-title{
+  margin-bottom:1.75rem;padding-bottom:1.25rem;
+  border-bottom:1px solid var(--border);
+}
+.battle-page .page-title .num{
+  font-family:var(--font-mono);font-size:.74rem;font-weight:700;
+  color:var(--accent);letter-spacing:.06em;margin-bottom:.5rem;display:block;
+}
+.battle-page .page-title h1{
+  font-family:var(--font-serif);
+  font-size:clamp(1.35rem,3.8vw,1.9rem);
+  font-weight:700;color:var(--heading);line-height:1.25;margin-bottom:.5rem;
+}
+.battle-page .page-title .date{
+  font-family:var(--font-mono);font-size:.78rem;color:var(--text-faint);
+}
+.battle-page .page-title .medinsky-line{
+  font-family:var(--font-mono);font-size:.72rem;
+  color:var(--accent-deep);letter-spacing:.05em;margin-top:.5rem;display:block;
+}
+
+.section{
+  margin-bottom:1.1rem;padding:.9rem 1.05rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-left:2px solid var(--accent);border-radius:var(--radius-sm);
+}
+.section:last-child{margin-bottom:0}
+.section.commanders{border-left-color:var(--accent)}
+.section.course{border-left-color:var(--course)}
+.section.outcome{border-left-color:var(--accent-deep);background:var(--surface-2)}
+.section.map-section{border-left-color:var(--border-strong);padding:.55rem}
+.section.tasks{border-left-color:var(--red);background:var(--surface-2)}
+
+.section-label{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.66rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-faint);margin-bottom:.6rem;
+}
+.section-label::before{
+  content:"";display:block;width:14px;height:1px;
+  background:var(--accent);opacity:.7;
+}
+.section.commanders .section-label{color:var(--accent-deep)}
+.section.course .section-label{color:var(--course)}
+.section.outcome .section-label{color:var(--accent)}
+.section.tasks .section-label{color:var(--red)}
+
+.section-text{color:var(--text);font-size:.88rem;line-height:1.7}
+.section-text + .section-text{margin-top:.6rem}
+.names{font-family:var(--font-serif);font-style:italic;letter-spacing:.01em;font-size:.9rem}
+
+.map-frame{
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  overflow:hidden;background:var(--map-bg);line-height:0;
+}
+.map-frame img{width:100%;height:auto;display:block;filter:saturate(.85) contrast(1.02);transition:transform .5s ease, filter .3s ease}
+.map-frame:hover img{transform:scale(1.01);filter:saturate(1) contrast(1.05)}
+.map-caption{
+  font-size:.7rem;color:var(--text-faint);margin-top:.5rem;
+  line-height:1.45;font-style:italic;font-family:var(--font-serif);
+}
+
+.task{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:.75rem .9rem;margin-bottom:.55rem;font-size:.85rem;
+}
+.task:last-child{margin-bottom:0}
+.task-num{
+  display:inline-block;font-family:var(--font-mono);font-size:.68rem;
+  font-weight:700;color:var(--text-faint);border:1px solid var(--border-strong);
+  border-radius:2px;padding:.05rem .35rem;margin-right:.4rem;vertical-align:middle;line-height:1.5;
+}
+.task-q{color:var(--text);line-height:1.6;margin-bottom:.55rem}
+.answer-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.answer-input{
+  flex:1;min-width:170px;padding:.5rem .7rem;
+  border:1px solid var(--input-border);border-radius:var(--radius-sm);
+  background:var(--input-bg);color:var(--text);
+  font-size:.83rem;transition:border-color var(--transition),box-shadow var(--transition);
+}
+.answer-input::placeholder{color:var(--text-faint)}
+.answer-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(200,163,73,.15)}
+.answer-input.correct{border-color:var(--correct-border);background:var(--correct-bg)}
+.answer-input.wrong{border-color:var(--wrong-border);background:var(--wrong-bg)}
+
+.check-btn{
+  padding:.5rem 1rem;border:none;border-radius:var(--radius-sm);
+  background:var(--btn-bg);color:var(--btn-text);
+  font-size:.75rem;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;cursor:pointer;
+  transition:all var(--transition);white-space:nowrap;
+}
+.check-btn:hover{filter:brightness(1.1);box-shadow:0 2px 8px rgba(200,163,73,.3)}
+.check-btn:active{transform:translateY(1px)}
+
+.result{
+  margin-top:.55rem;padding:.5rem .7rem;border-radius:var(--radius-sm);
+  font-size:.78rem;line-height:1.5;display:none;
+  font-family:var(--font-mono);
+}
+.result.show{display:block}
+.result.ok{background:var(--correct-bg);border-left:2px solid var(--correct-border);color:var(--text)}
+.result.fail{background:var(--wrong-bg);border-left:2px solid var(--wrong-border);color:var(--text)}
+.result .tag{font-weight:700;letter-spacing:.06em;margin-right:.4rem}
+.result.ok .tag{color:var(--correct-border)}
+.result.fail .tag{color:var(--wrong-border)}
+
+footer{
+  text-align:center;margin-top:3rem;padding-top:1.5rem;position:relative;
+  font-family:var(--font-mono);font-size:.68rem;color:var(--text-faint);letter-spacing:.1em;
+}
+footer::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:50%;height:1px;background:var(--divider);
+}
+
+.view{animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.no-results{
+  text-align:center;padding:2.5rem 1rem;
+  color:var(--text-faint);font-family:var(--font-mono);font-size:.8rem;
+  display:none;
+}
+.no-results.show{display:block}
+.no-results .big{
+  display:block;font-family:var(--font-serif);font-size:1.4rem;
+  color:var(--text-muted);margin-bottom:.5rem;
+}
+
+@media (max-width:640px){
+  body{padding:1.2rem .65rem 3rem}
+  .theme-toggle{width:38px;height:38px;font-size:1rem;top:.9rem;right:.9rem}
+  .battle-item{padding:1.05rem 1.15rem;gap:.85rem}
+  .battle-item .num{font-size:.68rem;padding:.25rem .5rem}
+  .section{padding:.75rem .85rem}
+  .section-text{font-size:.85rem}
+  .answer-input{font-size:.8rem}
+  .check-btn{font-size:.7rem;padding:.45rem .85rem}
+  .year-title .year-meta{display:none}
+  .search-input{height:48px;padding-left:3rem}
+  .search-icon{left:14px}
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+  <span id="themeIcon">☀</span>
+</button>
+
+<div class="container">
+  <div id="app"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================================================================
+     ДАННЫЕ — 29 битв, задания в формате ФИПИ
+     ================================================================ */
+  const BATTLES = [
+    {
+      id: 'brest', year: 1941, index: '01',
+      title: 'Оборона Бреста',
+      date: '22 июня — июль 1941',
+      para: '§29 · С. 308–321',
+      img: 'images/A.png',
+      imgCaption: 'Схема обороны Брестской крепости, 1941 г.',
+      commandersLabel: 'Участники',
+      commanders: 'П.М. Гаврилов, И.Н. Зубачев, Е.М. Фомин, А.М. Кижеватов',
+      course: [
+        'Брестская крепость первой приняла удар немецких войск 22 июня 1941 года. Гарнизон, насчитывавший около 3,5 тысяч человек, оказался в полном окружении уже в первые часы войны. Немецкое командование, имея многократное превосходство в силах и артиллерии, рассчитывало взять крепость за несколько часов — к исходу первого дня наступления.',
+        'Однако бойцы под командованием майора П.М. Гаврилова, капитана И.Н. Зубачева, полкового комиссара Е.М. Фомина и лейтенанта А.М. Кижеватова организовали упорную оборону. Штурмовые группы вермахта несли большие потери, захлёбываясь в узких коридорах и казематах. Крепость оборонялась не как обычный укреплённый пункт, а как настоящая крепость-цитадель.',
+        'Отдельные группы защитников сражались в подвалах и казематах более месяца — до конца июля. На стенах крепости остались надписи: «Умираем, но не сдаёмся!», «Прощай, Родина!». Даже когда крепость официально была оставлена, в её развалинах продолжали биться одиночные бойцы.',
+        'Оборона Брестской крепости стала символом стойкости и массового героизма советских солдат в первые, самые тяжёлые дни войны. Она показала, что план блицкрига даёт сбой с первых часов.'
+      ],
+      outcome: 'Сдача крепости. В 1965 году Брестской крепости присвоено звание «Крепость-герой».',
+      tasks: [
+        { q:'В обороне Брестской крепости важную роль сыграл ____________. (Введите фамилию)', answer:'гаврилов|п.м. гаврилов|п м гаврилов' },
+        { q:'Заполните пропуск: «Оборона Брестской крепости началась в ______ 1941 года».', answer:'июне|июнь|июн' },
+        { q:'В каком году Брестской крепости было присвоено звание «Крепость-герой»?', answer:'1965' },
+        { q:'Укажите название реки, на которой расположена Брестская крепость.', answer:'западный буг|буг' },
+        { q:'Установите соответствие: А) Начало обороны Брестской крепости — Б) Освобождение Бреста — В) Присвоение звания «Крепость-герой». Годы: 1) 1941 2) 1944 3) 1965. Ответьте цифрами через запятую.', answer:'1, 2, 3' }
+      ]
+    },
+    {
+      id: 'smolensk', year: 1941, index: '02',
+      title: 'Смоленское сражение',
+      date: '10 июля — 10 сентября 1941',
+      para: '§29 · С. 308–321',
+      img: 'images/B.jpg',
+      imgCaption: 'Карта боевых действий на Смоленском направлении, 1941 г.',
+      commandersLabel: 'Командующие',
+      commanders: 'С.К. Тимошенко (Западный фронт), В.Я. Качалов, В.А. Хоменко, С.А. Калинин, И.И. Масленников, К.К. Рокоссовский, А.И. Еременко (Брянский фронт)',
+      course: [
+        'Смоленское сражение стало одним из крупнейших оборонительных и наступательных сражений первого периода войны. Немецкая группа армий «Центр» стремилась кратчайшим путём прорваться к Москве через Смоленск — «ключ-город» на пути к столице.',
+        'Советские войска Западного, Резервного и Брянского фронтов вели тяжёлые оборонительные бои, постоянно контратакуя. В районе Смоленска развернулось крупное танковое сражение, в котором с обеих сторон участвовали сотни машин.',
+        'Особую роль сыграли соединения под командованием К.К. Рокоссовского и А.И. Еременко. В ходе сражения советское командование впервые применило новые артиллерийские и танковые соединения, а также впервые провело крупную наступательную операцию — Рославльско-Новозыбковскую.',
+        'Главный итог сражения: впервые за всю кампанию немецкие войска были вынуждены перейти к обороне на главном направлении. План молниеносной войны дал первую серьёзную трещину. Задержка под Смоленском позволила советскому командованию выиграть время для подготовки обороны Москвы.'
+      ],
+      outcome: 'Предпринята первая попытка контрнаступления, немецкие войска впервые перешли к обороне. Смоленск был оставлен 29 июля 1941 года.',
+      tasks: [
+        { q:'Укажите фамилию командующего Западным фронтом в Смоленском сражении.', answer:'тимошенко' },
+        { q:'Назовите немецкую группу армий, наступавшую на Смоленск.', answer:'центр' },
+        { q:'В каком году Смоленск был освобождён советскими войсками?', answer:'1943' },
+        { q:'Назовите фамилию командующего 16-й армией, особо отличившегося в Смоленском сражении.', answer:'рокоссовский' },
+        { q:'Расположите события в хронологической последовательности: 1) Смоленское сражение 2) Начало блокады Ленинграда 3) Московская битва. Ответьте цифрами через запятую.', answer:'1, 2, 3' }
+      ]
+    },
+    {
+      id: 'moscow', year: 1941, index: '03',
+      title: 'Московская битва (операция «Тайфун»)',
+      date: '30 сентября 1941 — 20 апреля 1942',
+      para: '§30 · С. 322–337',
+      img: 'images/C.webp',
+      imgCaption: 'Великая битва под Москвой. Карта обороны и разгрома немецких войск.',
+      commandersLabel: 'Командующие',
+      commanders: 'Г.К. Жуков (Западный фронт), И.С. Конев (Калининский фронт), С.К. Тимошенко (Юго-Западный фронт), К.К. Рокоссовский (16-я армия), И.В. Панфилов (316-я стрелковая дивизия), В.В. Клочков (политрук 4-й роты), И.В. Болдин',
+      course: [
+        'Немецкое командование начало операцию «Тайфун» — генеральное наступление на Москву. План предусматривал окружение и уничтожение основных сил Западного, Резервного и Брянского фронтов, после чего должен был последовать захват столицы.',
+        'В октябре 1941 года враг прорвал оборону и окружил крупные силы советских войск под Вязьмой и Брянском. Критический момент наступил в конце октября – ноябре, le:hover .icon-down,
 .resize-handle.dragging .icon-down{transform:translateY(2px)}
 
 .detail-section{
